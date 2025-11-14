@@ -1,0 +1,28 @@
+/* 确保页面元素占满视口高度 */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* 让主内容区域在顶部导航条下方充满剩余空间 */
+.h-100 {
+    height: calc(100vh - 56px); /* 56px 是 Bootstrap 默认导航条的高度 */
+}
+
+/* 侧边栏样式 */
+#sidebar {
+    /* 侧边栏内容可以滚动 */
+    flex-shrink: 0; 
+}
+
+/* 视频播放器区域 */
+.video-wrapper {
+    /* 确保视频播放器占据容器宽度 */
+    max-width: 100%; 
+}
+
+/* 隐藏链接下的下划线 */
+.list-group-item-action {
+    cursor: pointer;
+}

@@ -1,0 +1,153 @@
+[
+    {
+        "title": "第2学期",
+        "courses": [
+            {
+                "title": "课程：final",
+                "weeks": [
+                    {
+                        "title": "第7周",
+                        "sections": [
+                            {
+                                "title": "第0小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w7c0.mp4"
+                            },
+                            {
+                                "title": "第1小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w7c1.mp4"
+                            },
+                            {
+                                "title": "第2小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w7c2.mp4"
+                            },
+                            {
+                                "title": "第3小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w7c3.mp4"
+                            },
+                            {
+                                "title": "回顾总结",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w7recap.mp4"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "第12周",
+                        "sections": [
+                            {
+                                "title": "第0小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w12c0.mp4"
+                            },
+                            {
+                                "title": "第1小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w12c1.mp4"
+                            },
+                            {
+                                "title": "第2小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w12c2.mp4"
+                            },
+                            {
+                                "title": "第3小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w12c3.mp4"
+                            },
+                            {
+                                "title": "第4小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w12c4.mp4"
+                            },
+                            {
+                                "title": "回顾总结",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w12recap.mp4"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "第13周",
+                        "sections": [
+                            {
+                                "title": "第0小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w13c0.mp4"
+                            },
+                            {
+                                "title": "第1小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w13c1.mp4"
+                            },
+                            {
+                                "title": "第2小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w13c2.mp4"
+                            },
+                            {
+                                "title": "第3小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w13c3.mp4"
+                            },
+                            {
+                                "title": "第4小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w13c4.mp4"
+                            },
+                            {
+                                "title": "第5小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w13c5.mp4"
+                            },
+                            {
+                                "title": "回顾总结",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w13recap.mp4"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "第14周",
+                        "sections": [
+                            {
+                                "title": "第0小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w14c0.mp4"
+                            },
+                            {
+                                "title": "第1小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w14c1.mp4"
+                            },
+                            {
+                                "title": "第2小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w14c2.mp4"
+                            },
+                            {
+                                "title": "第3小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w14c3.mp4"
+                            },
+                            {
+                                "title": "第4小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w14c4.mp4"
+                            },
+                            {
+                                "title": "回顾总结",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w14recap.mp4"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "第15周",
+                        "sections": [
+                            {
+                                "title": "第0小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w15c0.mp4"
+                            },
+                            {
+                                "title": "第1小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w15c1.mp4"
+                            },
+                            {
+                                "title": "第2小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w15c2.mp4"
+                            },
+                            {
+                                "title": "第3小节",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w15c3.mp4"
+                            },
+                            {
+                                "title": "回顾总结",
+                                "url": "https://videos.yourdomain.com/file/mytutorial/term2/final/final-w15recap.mp4"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
