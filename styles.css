@@ -111,7 +111,7 @@ html, body {
     color: #777; /* 图标颜色 */
 }
 
-/* 修正 L4 内容容器的背景色 */
+/* L2/L3 content container (用于确保L4 link的hover效果不会被上级背景色干扰) */
 .collapse {
     background-color: #1E1E1E;
 }
