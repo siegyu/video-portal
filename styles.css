@@ -1,28 +1,103 @@
-/* 确保页面元素占满视口高度 */
+/* 2. 页面整体呈暗色调 & 5. 字体缩小 & 4. 播放界面缩小 */
+/* ---------------------------------------------------- */
+
+/* 全局暗色调设置 */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    /* 2. 页面整体呈暗色调 - 设置深灰色背景和浅色默认文本 */
+    background-color: #121212; 
+    color: #E0E0E0; /* 浅灰色文本 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 让主内容区域在顶部导航条下方充满剩余空间 */
-.h-100 {
-    height: calc(100vh - 56px); /* 56px 是 Bootstrap 默认导航条的高度 */
+/* 确保内容区域正确占满屏幕剩余高度 */
+.h-100-main {
+    height: calc(100vh - 48px); /* 导航条高度约为48px，留出空间 */
+    overflow-y: auto; 
 }
 
-/* 侧边栏样式 */
-#sidebar {
-    /* 侧边栏内容可以滚动 */
-    flex-shrink: 0; 
+/* 顶部导航条字体缩小 */
+.navbar-brand, .navbar-text {
+    /* 5. 顶部字体缩小 */
+    font-size: 0.9rem; 
 }
 
-/* 视频播放器区域 */
+/* ---------------------------------------------------- */
+/* 4. 播放界面缩小至右栏的约90% */
+/* ---------------------------------------------------- */
+#player-view {
+    /* 居中播放器 */
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
 .video-wrapper {
-    /* 确保视频播放器占据容器宽度 */
-    max-width: 100%; 
+    /* 4. 限制播放器最大宽度为容器的90% */
+    max-width: 90%; 
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    /* 播放器下缘溢出屏幕的问题通过 .h-100-main 的 overflow-y: auto 解决了，同时设置了90%的限制 */
 }
 
-/* 隐藏链接下的下划线 */
-.list-group-item-action {
-    cursor: pointer;
+/* ---------------------------------------------------- */
+/* 3. 课程列表布局样式 (实现 L1/L2/L3/L4 的视觉效果) */
+/* ---------------------------------------------------- */
+
+/* L1: 学期块样式 */
+.semester-block {
+    background-color: #1E1E1E; /* 稍亮的暗色块 */
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+/* L3: 周标题样式 */
+.week-title {
+    color: #90CAF9; /* 浅蓝色标题 */
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1rem; /* 5. 字体缩小 */
+    font-weight: 500;
+}
+
+/* L4: 小节列表样式 */
+.section-list {
+    padding-left: 0;
+    list-style: none; /* 移除默认符号 */
+}
+
+.section-list li {
+    margin-bottom: 5px;
+}
+
+.section-link {
+    color: #CCCCCC; /* 链接颜色 */
+    text-decoration: none;
+    font-size: 0.9rem; /* 5. 字体缩小 */
+    transition: color 0.2s;
+    display: block; /* 使链接更容易点击 */
+}
+
+.section-link:hover, .section-link.active {
+    color: #4CAF50; /* 鼠标悬停或选中时高亮绿色 */
+    text-decoration: underline;
+}
+
+/* L2 Tab 样式优化 (暗色背景下的 Tab 切换) */
+.nav-tabs .nav-link {
+    color: #ccc;
+    background-color: #282828;
+    border-color: #444;
+}
+
+.nav-tabs .nav-link.active {
+    color: #fff;
+    background-color: #121212;
+    border-color: #444 #444 #121212; /* 底部颜色与主体背景一致 */
 }
