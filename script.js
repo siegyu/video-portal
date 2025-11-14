@@ -1,39 +1,35 @@
 // 1. 获取 HTML 元素引用
-const sidebarNavTree = document.getElementById('video-navigation-tree'); // 左侧导航栏
-const listView = document.getElementById('list-view'); // 右侧内容区: 列表
-const playerView = document.getElementById('player-view'); // 右侧内容区: 播放器
-const headerVideoTitle = document.getElementById('header-video-title'); // 顶部标题
+const sidebarNavTree = document.getElementById('video-navigation-tree'); 
+const listView = document.getElementById('list-view'); 
+const playerView = document.getElementById('player-view'); 
+const headerVideoTitle = document.getElementById('header-video-title'); 
 const videoPlayer = document.getElementById('video-player');
-const toggleListBtn = document.getElementById('toggle-list-btn'); // 顶部“完整列表”按钮
-const courseCatalogContainer = document.getElementById('course-catalog-container'); // 列表容器
+const toggleListBtn = document.getElementById('toggle-list-btn'); 
+const courseCatalogContainer = document.getElementById('course-catalog-container'); 
 
-let currentActiveLink = null; // 跟踪当前高亮链接
-let uniqueIdCounter = 0; // 用于生成唯一的 Collapse ID
+let currentActiveLink = null; 
+let uniqueIdCounter = 0; 
 
 /**
- * 切换右侧视图模式：列表视图 vs 播放器视图
- * (保持不变)
+ * 助手函数：翻转折叠图标
  */
-function toggleView(mode) {
-    if (mode === 'list') {
-        listView.classList.remove('d-none');
-        playerView.classList.add('d-none');
-        toggleListBtn.classList.add('d-none'); 
-        headerVideoTitle.classList.remove('d-none'); 
-        headerVideoTitle.textContent = '请从左侧选择课程小节';
-        videoPlayer.pause(); 
-        
-    } else if (mode === 'player') {
-        listView.classList.add('d-none');
-        playerView.classList.remove('d-none');
-        toggleListBtn.classList.remove('d-none'); 
-        headerVideoTitle.classList.remove('d-none'); 
+function toggleIcon(headerElement, isExpanded) {
+    const icon = headerElement.querySelector('.collapse-icon');
+    if (icon) {
+        if (isExpanded) {
+            icon.classList.remove('bi-chevron-right');
+            icon.classList.add('bi-chevron-down');
+        } else {
+            icon.classList.remove('bi-chevron-down');
+            icon.classList.add('bi-chevron-right');
+        }
     }
 }
 
+
 /**
  * 2. 核心函数：加载视频并更新标题
- * (修改：调用 autoExpandHierarchy)
+ * (重要修改：增强处理来自右侧列表的点击)
  */
 function loadVideo(url, fullTitle, linkElement) {
     toggleView('player'); 
@@ -46,24 +42,23 @@ function loadVideo(url, fullTitle, linkElement) {
         videoPlayer.play(); 
     }
     
+    // 查找左侧导航栏中的对应链接
+    let targetLink = linkElement;
+    if (!targetLink) {
+        // 如果是右侧列表点击，linkElement为空，通过url查找左侧链接
+        targetLink = document.querySelector(`.section-link-sidebar[data-url="${url}"]`);
+    }
+
     // 高亮逻辑
     if (currentActiveLink) {
         currentActiveLink.classList.remove('active');
     }
-    if (linkElement) {
-        linkElement.classList.add('active');
-        currentActiveLink = linkElement;
-    }
-    
-    // NEW: 播放时，左侧导航栏同步展开分级
-    if (linkElement) {
-        autoExpandHierarchy(linkElement);
-    } else {
-        // 当点击右侧列表视图中的链接时
-        const sidebarLink = document.querySelector(`.section-link-sidebar[data-url="${url}"]`);
-        if (sidebarLink) {
-            loadVideo(url, fullTitle, sidebarLink); // 递归调用，带上 sidebarLink 进行高亮和展开
-        }
+    if (targetLink) {
+        targetLink.classList.add('active');
+        currentActiveLink = targetLink;
+        
+        // 播放时，左侧导航栏同步展开分级定位
+        autoExpandHierarchy(targetLink);
     }
 }
 
@@ -74,33 +69,27 @@ function loadVideo(url, fullTitle, linkElement) {
  * 助手函数：创建可折叠的标题 (L1, L2, L3)
  */
 function createCollapsibleHeader(title, targetId, levelClass, indentation) {
-    // 使用 <a> 标签作为可点击元素，并使用 d-flex 实现图标对齐
     const header = document.createElement('a');
-    header.className = `${levelClass} d-flex justify-content-between align-items-center`;
+    header.className = `${levelClass}`;
     header.setAttribute('data-bs-toggle', 'collapse');
     header.setAttribute('data-bs-target', `#${targetId}`);
-    header.setAttribute('aria-expanded', 'false'); // 默认折叠
+    header.setAttribute('aria-expanded', 'false'); 
     header.style.paddingLeft = `${indentation}px`; // 应用缩进
     
     // 标题文本和折叠图标
     header.innerHTML = `
         <span>${title}</span>
-        <i class="bi bi-chevron-right collapse-icon" style="margin-right: 10px;"></i>
+        <i class="bi bi-chevron-right collapse-icon"></i>
     `;
     
     // 监听 Bootstrap 折叠事件，手动翻转图标
     const collapseElement = document.getElementById(targetId);
     if (collapseElement) {
-        const icon = header.querySelector('.collapse-icon');
         collapseElement.addEventListener('show.bs.collapse', () => {
-            icon.classList.remove('bi-chevron-right');
-            icon.classList.add('bi-chevron-down');
-            header.setAttribute('aria-expanded', 'true');
+            toggleIcon(header, true);
         });
         collapseElement.addEventListener('hide.bs.collapse', () => {
-            icon.classList.remove('bi-chevron-down');
-            icon.classList.add('bi-chevron-right');
-            header.setAttribute('aria-expanded', 'false');
+            toggleIcon(header, false);
         });
     }
     
@@ -113,7 +102,7 @@ function createCollapsibleHeader(title, targetId, levelClass, indentation) {
 function createCollapsibleContent(id) {
     const content = document.createElement('div');
     content.id = id;
-    content.className = 'collapse'; // 默认处于折叠状态
+    content.className = 'collapse'; 
     return content;
 }
 
@@ -138,7 +127,7 @@ function buildSidebarNavigation(data) {
             const L2ContentId = `collapse-l2-${uniqueIdCounter++}`;
 
             // L2 Header (课程)
-            const courseHeader = createCollapsibleHeader(course.title, L2ContentId, 'sidebar-l2-header', 20);
+            const courseHeader = createCollapsibleHeader(course.title, L2ContentId, 'sidebar-l2-header', 25);
             L1Content.appendChild(courseHeader);
 
             // L2 Content Container (周 L3)
@@ -148,24 +137,22 @@ function buildSidebarNavigation(data) {
                 const L3ContentId = `collapse-l3-${uniqueIdCounter++}`;
 
                 // L3 Header (周)
-                const weekHeader = createCollapsibleHeader(week.title, L3ContentId, 'sidebar-l3-header', 30);
+                const weekHeader = createCollapsibleHeader(week.title, L3ContentId, 'sidebar-l3-header', 40);
                 L2Content.appendChild(weekHeader);
 
                 // L3 Content Container (小节 L4)
                 const L3Content = createCollapsibleContent(L3ContentId);
-                L3Content.style.backgroundColor = '#1E1E1E'; // L4 容器背景
-
+                
                 week.sections.forEach((section) => {
                     const fullTitle = `${semester.title} / ${course.title} / ${week.title} / ${section.title}`;
                     
                     // L4 链接
                     const sectionLink = document.createElement('a');
                     sectionLink.className = 'section-link-sidebar';
-                    sectionLink.style.paddingLeft = '45px'; // 额外的缩进
+                    sectionLink.style.paddingLeft = '55px'; // 最终缩进
                     sectionLink.textContent = section.title;
                     sectionLink.href = '#'; 
                     sectionLink.setAttribute('data-url', section.url); 
-                    // 存储父级 ID，用于自动展开
                     sectionLink.setAttribute('data-parent-l1', L1ContentId);
                     sectionLink.setAttribute('data-parent-l2', L2ContentId);
                     sectionLink.setAttribute('data-parent-l3', L3ContentId);
@@ -209,11 +196,8 @@ function autoExpandHierarchy(linkElement) {
             // 确保父级 header 的图标同步更新
             const parentHeader = document.querySelector(`[data-bs-target="#${id}"]`);
             if (parentHeader) {
-                const icon = parentHeader.querySelector('.collapse-icon');
-                if (icon) {
-                    icon.classList.remove('bi-chevron-right');
-                    icon.classList.add('bi-chevron-down');
-                }
+                toggleIcon(parentHeader, true); // 设置为展开图标
+                parentHeader.setAttribute('aria-expanded', 'true');
             }
         }
     });
@@ -225,10 +209,9 @@ function autoExpandHierarchy(linkElement) {
 }
 
 
-// --- DOMContentLoaded 和 fetch 逻辑 (保持不变) ---
+// --- DOMContentLoaded 和 fetch 逻辑 (修复右侧列表点击 BUG) ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 初始显示列表视图
     toggleView('list'); 
     
     document.getElementById('home-link').onclick = (e) => {
@@ -244,9 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            // 右侧首页列表视图（用于首页展示）
             buildListView(data); 
-            // 左侧折叠导航栏（用于永久导航）
             buildSidebarNavigation(data); 
         })
         .catch(error => {
@@ -255,10 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-// buildListView 逻辑与上一次保持一致，确保右侧首页列表仍能生成
+// buildListView 函数 (重要修改：修正了 sectionLink.onclick 的调用)
 function buildListView(data) {
     courseCatalogContainer.innerHTML = ''; 
-    // ... (此处省略 buildListView 函数体，请保持与上一个回复中的该函数代码一致)
     if (!data || data.length === 0) {
         courseCatalogContainer.innerHTML = '<p class="p-3 text-muted">未找到视频目录数据。</p>';
         return;
@@ -319,7 +299,8 @@ function buildListView(data) {
                     
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
-                        loadVideo(section.url, fullTitle); // 点击右侧列表时，不传 linkElement，让 loadVideo 自动在左侧查找并高亮/展开
+                        // BUG 修复：点击右侧列表时，不传入 linkElement，loadVideo 会自动查找并高亮/展开
+                        loadVideo(section.url, fullTitle); 
                     };
 
                     sectionList.innerHTML += `<li>${sectionLink.outerHTML}</li>`;

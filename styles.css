@@ -1,5 +1,5 @@
 /* ---------------------------------------------------- */
-/* 全局暗色调和基本布局 (保留) */
+/* 全局暗色调和基本布局 (保持不变) */
 /* ---------------------------------------------------- */
 html, body {
     height: 100%;
@@ -24,65 +24,80 @@ html, body {
 }
 
 /* ---------------------------------------------------- */
-/* 左侧导航栏样式 (Sidebar) - 优化折叠标题 */
+/* 左侧导航栏样式 (Sidebar) - 增强层次感和缩进 */
 /* ---------------------------------------------------- */
 
-/* L1, L2, L3 通用样式：使用 Flexbox 对齐标题和图标 */
+/* L1, L2, L3 标题通用样式：Flexbox 布局，增加上下内边距 */
 .sidebar-l1-header, .sidebar-l2-header, .sidebar-l3-header {
-    display: flex !important; /* 使标题和图标并排 */
-    justify-content: space-between; /* 标题居左，图标居右 */
+    display: flex !important; 
+    justify-content: space-between; 
     align-items: center;
     border: none !important;
     cursor: pointer;
-    text-decoration: none; /* 移除链接下划线 */
+    text-decoration: none;
     transition: background-color 0.2s;
-    user-select: none; /* 避免选中标题文本 */
+    user-select: none;
+    /* 新增：增大上下内边距，增加行距 */
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
 }
 
-/* L1: 学期 */
+/* L1: 学期 - 突出显示，最少缩进 */
 .sidebar-l1-header {
     background-color: #282828 !important; 
-    color: #90CAF9 !important; 
-    padding: 8px 10px !important; 
-    margin-top: 10px; 
+    color: #90CAF9 !important; /* 主题色蓝 */
+    padding-left: 10px !important; 
+    margin-top: 8px; /* 增加 L1 之间的垂直间距 */
     font-weight: bold;
     font-size: 0.95rem;
 }
+.sidebar-l1-header:hover {
+    background-color: #333333 !important;
+}
 
-/* L2: 课程 */
+/* L2: 课程 - 字体略小，增加缩进 */
 .sidebar-l2-header {
     background-color: #1E1E1E !important; 
-    color: #C0C0C0 !important; 
-    padding: 6px 10px !important; 
+    color: #C0C0C0 !important; /* 浅灰色 */
+    padding-left: 25px !important; /* 缩进 15px */
     font-weight: 500;
 }
-
-/* L3: 周 */
-.sidebar-l3-header {
-    background-color: #1E1E1E !important; 
-    color: #888888 !important; 
-    padding: 4px 10px !important; 
-    font-size: 0.8rem;
+.sidebar-l2-header:hover {
+    background-color: #282828 !important;
 }
 
-/* L4: 小节链接 - 增加 hover 效果 */
+/* L3: 周 - 字体更小，更多缩进，暗淡颜色 */
+.sidebar-l3-header {
+    background-color: #1E1E1E !important; 
+    color: #888888 !important; /* 暗淡文本 */
+    padding-left: 40px !important; /* 缩进 30px */
+    font-size: 0.8rem;
+}
+.sidebar-l3-header:hover {
+    background-color: #282828 !important;
+}
+
+/* L4: 小节链接 - 最终层级，实现高亮和悬停反馈 */
 .section-link-sidebar {
     background-color: #1E1E1E !important; 
     color: #E0E0E0 !important;
-    padding: 5px 10px !important; 
+    padding: 6px 10px !important; /* 增大上下内边距 */
+    padding-left: 55px !important; /* 最终缩进 45px */
     border: none !important;
     text-decoration: none;
     transition: background-color 0.2s;
     display: block;
+    font-size: 0.85rem;
 }
 
 .section-link-sidebar:hover {
-    background-color: #333333 !important; 
+    background-color: #333333 !important; /* 悬停颜色 */
     color: #E0E0E0 !important;
 }
 
+/* 正在播放 (Active) 的小节 */
 .section-link-sidebar.active {
-    background-color: #0056b3 !important; 
+    background-color: #4CAF50 !important; /* 突出绿色背景 */
     color: #ffffff !important;
     font-weight: bold;
 }
@@ -92,10 +107,17 @@ html, body {
     font-size: 0.8em;
     transition: transform 0.2s;
     flex-shrink: 0; 
+    margin-right: 10px; /* 确保图标距离右侧边界有固定间距 */
+    color: #777; /* 图标颜色 */
+}
+
+/* 修正 L4 内容容器的背景色 */
+.collapse {
+    background-color: #1E1E1E;
 }
 
 /* ---------------------------------------------------- */
-/* 右侧播放器区域 (Main Content) - 保持不变 */
+/* 右侧播放器区域 (保持不变) */
 /* ---------------------------------------------------- */
 #player-view {
     display: flex;
@@ -121,8 +143,3 @@ html, body {
     height: auto;
     object-fit: contain; 
 }
-
-.navbar-brand, .navbar-text, #header-video-title {
-    font-size: 0.9rem; 
-}
-/* ... 列表视图样式（list-view）保持不变 ... */
