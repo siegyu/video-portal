@@ -1,95 +1,119 @@
-/* 2. 页面整体呈暗色调 & 5. 字体缩小 & 4. 播放界面缩小 */
 /* ---------------------------------------------------- */
-
-/* 全局暗色调设置 */
+/* 1. 布局结构：上/左/右经典布局 */
+/* ---------------------------------------------------- */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    /* 2. 页面整体呈暗色调 - 设置深灰色背景和浅色默认文本 */
     background-color: #121212; 
-    color: #E0E0E0; /* 浅灰色文本 */
+    color: #E0E0E0; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 确保内容区域正确占满屏幕剩余高度 */
-.h-100-main {
-    height: calc(100vh - 48px); /* 导航条高度约为48px，留出空间 */
-    overflow-y: auto; 
+/* 核心：计算剩余视口高度 */
+.h-remaining-viewport {
+    /* 假设顶部导航栏高度为 48px */
+    height: calc(100vh - 48px); 
+    overflow: hidden; /* 防止主页面滚动 */
 }
 
-/* 顶部导航条字体缩小 */
-.navbar-brand, .navbar-text {
-    /* 5. 顶部字体缩小 */
-    font-size: 0.9rem; 
+/* 左侧导航栏样式 */
+#sidebar {
+    width: 280px; /* 固定宽度 */
+    overflow-y: auto; /* 允许左侧导航滚动 */
+    height: 100%; 
+    background-color: #1E1E1E !important; /* 暗色调的左侧栏 */
+    font-size: 0.85rem; /* 左栏和顶部字体缩小 */
 }
+
+/* 右侧内容区样式 */
+#main-content {
+    height: 100%; 
+    overflow-y: auto; /* 允许右侧列表视图滚动 */
+    background-color: #121212 !important; /* 主体背景 */
+}
+
 
 /* ---------------------------------------------------- */
-/* 4. 播放界面缩小至右栏的约90% */
+/* 2. 播放器自适应高度，防止底部控件溢出 */
 /* ---------------------------------------------------- */
 #player-view {
-    /* 居中播放器 */
+    /* 使用 Flexbox 使内容（视频+描述）垂直排列并占据全部高度 */
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    height: 100%; /* 占据右侧内容区的全部高度 */
 }
 
-.video-wrapper {
-    /* 4. 限制播放器最大宽度为容器的90% */
-    max-width: 90%; 
-    margin-top: 1rem;
+.video-wrapper-container {
+    /* 允许容器占据尽可能多的垂直空间 */
+    flex-grow: 1; 
+    /* 关键：限制最大高度，减去标题和下部描述区的预估高度，确保播放控件不溢出 */
+    /* 假设顶部标题和底部描述占约 100px 的高度 */
+    max-height: calc(100% - 100px); 
+    padding: 0 5%; /* 实现播放区缩小至右栏的约 90% 宽度 */
     margin-bottom: 1rem;
-    /* 播放器下缘溢出屏幕的问题通过 .h-100-main 的 overflow-y: auto 解决了，同时设置了90%的限制 */
+    
+    /* 内部使用 Flexbox 来确保视频正确居中和缩放 */
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
 }
 
+/* 重写 Bootstrap 的 ratio 容器，让它适应高度而不是宽度 */
+.ratio {
+    height: 100%;
+    width: auto; /* 允许宽度根据高度自动调整 */
+}
+
+
 /* ---------------------------------------------------- */
-/* 3. 课程列表布局样式 (实现 L1/L2/L3/L4 的视觉效果) */
+/* 3. 暗色调主题和列表样式 (保持上个版本的暗色调) */
 /* ---------------------------------------------------- */
 
-/* L1: 学期块样式 */
+.navbar-brand, .navbar-text {
+    font-size: 0.9rem; /* 顶部字体缩小 */
+}
+
+.bg-dark-sidebar {
+    background-color: #1E1E1E !important;
+}
+
 .semester-block {
-    background-color: #1E1E1E; /* 稍亮的暗色块 */
+    background-color: #1E1E1E; 
     border: 1px solid #333;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 30px;
 }
 
-/* L3: 周标题样式 */
 .week-title {
-    color: #90CAF9; /* 浅蓝色标题 */
+    color: #90CAF9; 
     border-bottom: 1px solid #333;
     padding-bottom: 5px;
     margin-top: 20px;
     margin-bottom: 10px;
-    font-size: 1rem; /* 5. 字体缩小 */
+    font-size: 0.9rem; /* 字体缩小 */
     font-weight: 500;
 }
 
-/* L4: 小节列表样式 */
 .section-list {
     padding-left: 0;
-    list-style: none; /* 移除默认符号 */
-}
-
-.section-list li {
-    margin-bottom: 5px;
+    list-style: none; 
 }
 
 .section-link {
-    color: #CCCCCC; /* 链接颜色 */
+    color: #CCCCCC; 
     text-decoration: none;
-    font-size: 0.9rem; /* 5. 字体缩小 */
+    font-size: 0.85rem; /* 字体缩小 */
     transition: color 0.2s;
-    display: block; /* 使链接更容易点击 */
+    display: block; 
 }
 
 .section-link:hover, .section-link.active {
-    color: #4CAF50; /* 鼠标悬停或选中时高亮绿色 */
+    color: #4CAF50; 
     text-decoration: underline;
 }
 
-/* L2 Tab 样式优化 (暗色背景下的 Tab 切换) */
 .nav-tabs .nav-link {
     color: #ccc;
     background-color: #282828;
@@ -99,5 +123,5 @@ html, body {
 .nav-tabs .nav-link.active {
     color: #fff;
     background-color: #121212;
-    border-color: #444 #444 #121212; /* 底部颜色与主体背景一致 */
+    border-color: #444 #444 #121212;
 }
