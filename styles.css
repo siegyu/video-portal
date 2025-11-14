@@ -10,123 +10,119 @@ html, body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 核心：计算剩余视口高度 */
 .h-remaining-viewport {
     height: calc(100vh - 48px); 
     overflow: hidden;
 }
 
-/* ---------------------------------------------------- */
-/* 左侧导航栏样式 (Sidebar) - 解决丑陋、密集、无层次感的问题 */
-/* ---------------------------------------------------- */
 #sidebar {
-    width: 280px; /* 固定宽度，已足够容纳标题 */
+    width: 280px; 
     overflow-y: auto; 
     height: 100%; 
     background-color: #1E1E1E !important; 
     font-size: 0.85rem; 
 }
 
-/* 导航树容器样式 */
-#video-navigation-tree {
-    padding-bottom: 20px; /* 底部留白 */
+/* ---------------------------------------------------- */
+/* 左侧导航栏样式 (Sidebar) - 优化折叠标题 */
+/* ---------------------------------------------------- */
+
+/* L1, L2, L3 通用样式：使用 Flexbox 对齐标题和图标 */
+.sidebar-l1-header, .sidebar-l2-header, .sidebar-l3-header {
+    display: flex !important; /* 使标题和图标并排 */
+    justify-content: space-between; /* 标题居左，图标居右 */
+    align-items: center;
+    border: none !important;
+    cursor: pointer;
+    text-decoration: none; /* 移除链接下划线 */
+    transition: background-color 0.2s;
+    user-select: none; /* 避免选中标题文本 */
 }
 
-/* L1: 学期 - 加粗、加大间距、增加缩进 */
+/* L1: 学期 */
 .sidebar-l1-header {
-    background-color: #282828 !important; /* L1 块更深 */
-    color: #90CAF9 !important; /* 浅蓝色，强调层级 */
-    padding: 8px 10px 8px 10px !important; /* 增加上下间距 */
-    margin-top: 10px; /* 顶部间隔 */
-    border: none !important;
+    background-color: #282828 !important; 
+    color: #90CAF9 !important; 
+    padding: 8px 10px !important; 
+    margin-top: 10px; 
     font-weight: bold;
     font-size: 0.95rem;
 }
 
-/* L2: 课程 - 字体略小，使用不同颜色和缩进 */
+/* L2: 课程 */
 .sidebar-l2-header {
     background-color: #1E1E1E !important; 
-    color: #C0C0C0 !important; /* 浅灰色 */
-    padding: 6px 10px 6px 20px !important; /* 增加左侧缩进 */
-    border: none !important;
+    color: #C0C0C0 !important; 
+    padding: 6px 10px !important; 
     font-weight: 500;
 }
 
-/* L3: 周 - 字体更小，更多缩进，暗淡颜色 */
+/* L3: 周 */
 .sidebar-l3-header {
     background-color: #1E1E1E !important; 
-    color: #888888 !important; /* 暗淡文本 */
-    padding: 4px 10px 4px 30px !important; /* 增加缩进 */
-    border: none !important;
+    color: #888888 !important; 
+    padding: 4px 10px !important; 
     font-size: 0.8rem;
 }
 
-/* L4: 小节链接 - 增加行距，取消边框，悬停高亮 */
+/* L4: 小节链接 - 增加 hover 效果 */
 .section-link-sidebar {
     background-color: #1E1E1E !important; 
     color: #E0E0E0 !important;
-    padding: 5px 10px 5px 40px !important; /* 显著缩进 */
+    padding: 5px 10px !important; 
     border: none !important;
     text-decoration: none;
     transition: background-color 0.2s;
+    display: block;
 }
 
 .section-link-sidebar:hover {
-    background-color: #333333 !important; /* 悬停颜色 */
+    background-color: #333333 !important; 
     color: #E0E0E0 !important;
 }
 
 .section-link-sidebar.active {
-    background-color: #0056b3 !important; /* 选中高亮蓝色 */
+    background-color: #0056b3 !important; 
     color: #ffffff !important;
     font-weight: bold;
 }
 
-
-/* ---------------------------------------------------- */
-/* 右侧播放器区域 (Main Content) - 修正不可见 BUG */
-/* ---------------------------------------------------- */
-#main-content {
-    height: 100%; 
-    overflow-y: auto; 
-    background-color: #121212 !important; 
+/* 折叠/展开图标样式 */
+.collapse-icon {
+    font-size: 0.8em;
+    transition: transform 0.2s;
+    flex-shrink: 0; 
 }
 
+/* ---------------------------------------------------- */
+/* 右侧播放器区域 (Main Content) - 保持不变 */
+/* ---------------------------------------------------- */
 #player-view {
-    /* 使用 Flexbox 使内容（视频+描述）垂直排列并占据全部高度 */
     display: flex;
     flex-direction: column;
-    /* Bug Fix: 确保父容器有明确的可见高度 */
     height: 100%; 
 }
 
 .video-wrapper-container {
     flex-grow: 1; 
-    min-height: 0; /* Bug Fix: 允许 flex item 正确收缩 */
-    
-    /* 解决溢出问题：确保视频容器的高度被限制在可用空间内 */
-    /* 假设标题和底部描述占约 100px 的高度 (已在JS中移除顶部标题，此处主要是底部描述区) */
-    max-height: calc(100% - 30px); /* 预留底部描述区和 padding */
-    padding: 0 5%; /* 实现播放区缩小至右栏的约 90% 宽度 */
-    
+    min-height: 0; 
+    max-height: calc(100% - 30px); 
+    padding: 0 5%; 
     display: flex;
     align-items: center; 
     justify-content: center; 
-    position: relative; /* 用于内部视频定位 */
+    position: relative; 
 }
 
-/* 核心 Bug Fix: 确保视频元素本身可见并占据容器 */
 #video-player {
-    /* 关键：让视频基于 width 和 height 约束，并保持纵横比 */
     max-width: 100%;
     max-height: 100%;
-    /* 确保视频元素保持其固有的 16:9 比例 */
     width: auto; 
     height: auto;
-    object-fit: contain; /* 确保视频内容在容器内完整显示 */
+    object-fit: contain; 
 }
 
-/* 顶部导航栏字体缩小 (保留) */
 .navbar-brand, .navbar-text, #header-video-title {
     font-size: 0.9rem; 
 }
+/* ... 列表视图样式（list-view）保持不变 ... */
