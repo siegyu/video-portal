@@ -63,7 +63,7 @@ function loadVideo(url, fullTitle, linkElement) {
     // 查找左侧导航栏中的对应链接
     let targetLink = linkElement;
     if (!targetLink) {
-        // BUG 修复：如果从右侧列表点击，通过 url 查找左侧链接。
+        // 如果从右侧列表点击，通过 url 查找左侧链接。
         targetLink = document.querySelector(`.section-link-sidebar[data-url="${url}"]`);
     }
 
@@ -81,20 +81,16 @@ function loadVideo(url, fullTitle, linkElement) {
 }
 
 
-// --- 导航栏折叠/展开功能相关函数 ---
+// --- 导航栏折叠/展开功能相关函数 (保持不变) ---
 
-/**
- * 助手函数：创建可折叠的标题 (L1, L2, L3)
- */
 function createCollapsibleHeader(title, targetId, levelClass, indentation) {
     const header = document.createElement('a');
     header.className = `${levelClass}`;
     header.setAttribute('data-bs-toggle', 'collapse');
     header.setAttribute('data-bs-target', `#${targetId}`);
     header.setAttribute('aria-expanded', 'false'); 
-    header.style.paddingLeft = `${indentation}px`; // 应用缩进
+    header.style.paddingLeft = `${indentation}px`;
     
-    // 标题文本和折叠图标
     header.innerHTML = `
         <span>${title}</span>
         <i class="bi bi-chevron-right collapse-icon"></i>
@@ -102,9 +98,6 @@ function createCollapsibleHeader(title, targetId, levelClass, indentation) {
     return header;
 }
 
-/**
- * 助手函数：创建折叠内容容器
- */
 function createCollapsibleContent(id) {
     const content = document.createElement('div');
     content.id = id;
@@ -114,13 +107,11 @@ function createCollapsibleContent(id) {
 
 /**
  * 4. 构建左侧永久可见的树形导航栏 (带折叠功能)
- * **核心 BUG 修复：正确附加元素结构**
  */
 function buildSidebarNavigation(data) {
-    sidebarNavTree.innerHTML = ''; // 清空加载目录...
+    sidebarNavTree.innerHTML = ''; 
     uniqueIdCounter = 0; 
     
-    // 助手函数：注册折叠事件（必须在元素添加到 DOM 后执行）
     function registerCollapseEvents(header, collapseElement) {
         collapseElement.addEventListener('show.bs.collapse', () => {
             toggleIcon(header, true);
@@ -133,46 +124,43 @@ function buildSidebarNavigation(data) {
     data.forEach((semester) => {
         const L1ContentId = `collapse-l1-${uniqueIdCounter++}`;
         
-        // --- L1 (学期) ---
+        // L1
         const semesterHeader = createCollapsibleHeader(semester.title, L1ContentId, 'sidebar-l1-header', 10);
         sidebarNavTree.appendChild(semesterHeader);
         
         const L1Content = createCollapsibleContent(L1ContentId);
-        sidebarNavTree.appendChild(L1Content); // BUG 修复：L1 内容直接附加到主导航栏
+        sidebarNavTree.appendChild(L1Content);
         registerCollapseEvents(semesterHeader, L1Content); 
 
-        // L1 是 L2 的父容器
         semester.courses.forEach((course) => {
             const L2ContentId = `collapse-l2-${uniqueIdCounter++}`;
 
-            // --- L2 (课程) ---
+            // L2
             const courseHeader = createCollapsibleHeader(course.title, L2ContentId, 'sidebar-l2-header', 25);
-            L1Content.appendChild(courseHeader); // L2 标题附加到 L1 内容
+            L1Content.appendChild(courseHeader);
             
             const L2Content = createCollapsibleContent(L2ContentId);
-            L1Content.appendChild(L2Content); // L2 内容附加到 L1 内容
+            L1Content.appendChild(L2Content);
             registerCollapseEvents(courseHeader, L2Content);
 
-            // L2 是 L3 的父容器
             course.weeks.forEach((week) => {
                 const L3ContentId = `collapse-l3-${uniqueIdCounter++}`;
 
-                // --- L3 (周) ---
+                // L3
                 const weekHeader = createCollapsibleHeader(week.title, L3ContentId, 'sidebar-l3-header', 40);
-                L2Content.appendChild(weekHeader); // L3 标题附加到 L2 内容
+                L2Content.appendChild(weekHeader);
 
                 const L3Content = createCollapsibleContent(L3ContentId);
-                L2Content.appendChild(L3Content); // L3 内容附加到 L2 内容
+                L2Content.appendChild(L3Content);
                 registerCollapseEvents(weekHeader, L3Content);
                 
-                // L3 是 L4 的父容器
                 week.sections.forEach((section) => {
                     const fullTitle = `${semester.title} / ${course.title} / ${week.title} / ${section.title}`;
                     
-                    // --- L4 (小节链接) ---
+                    // L4 
                     const sectionLink = document.createElement('a');
                     sectionLink.className = 'section-link-sidebar';
-                    sectionLink.style.paddingLeft = '55px'; // 最终缩进
+                    sectionLink.style.paddingLeft = '55px'; 
                     sectionLink.textContent = section.title;
                     sectionLink.href = '#'; 
                     sectionLink.setAttribute('data-url', section.url); 
@@ -185,7 +173,7 @@ function buildSidebarNavigation(data) {
                         loadVideo(section.url, fullTitle, sectionLink);
                     };
 
-                    L3Content.appendChild(sectionLink); // L4 链接附加到 L3 内容
+                    L3Content.appendChild(sectionLink);
                 }); 
             }); 
         }); 
@@ -225,7 +213,7 @@ function autoExpandHierarchy(linkElement) {
 }
 
 
-// --- DOMContentLoaded 和 fetch 逻辑 (保持不变) ---
+// --- DOMContentLoaded 和 fetch 逻辑 ---
 
 document.addEventListener('DOMContentLoaded', () => {
     toggleView('list'); 
@@ -252,7 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-// buildListView 函数 (保持与上一次修复后的版本一致)
+/**
+ * buildListView 函数 (核心 BUG 修复处)
+ */
 function buildListView(data) {
     courseCatalogContainer.innerHTML = ''; 
     if (!data || data.length === 0) {
@@ -269,7 +259,6 @@ function buildListView(data) {
         const tabList = document.createElement('ul');
         tabList.className = 'nav nav-tabs border-secondary mt-3 mb-3';
         tabList.id = tabListId;
-        tabList.setAttribute('role', 'tablist');
 
         const tabContent = document.createElement('div');
         tabContent.className = 'tab-content';
@@ -280,7 +269,6 @@ function buildListView(data) {
 
             const tabItem = document.createElement('li');
             tabItem.className = 'nav-item';
-            tabItem.setAttribute('role', 'presentation');
             tabItem.innerHTML = `
                 <button class="nav-link ${isActive ? 'active' : ''}" id="${courseTabId}-tab" data-bs-toggle="tab" data-bs-target="#${courseTabId}" type="button" role="tab" aria-controls="${courseTabId}" aria-selected="${isActive}">
                     ${course.title}
@@ -291,7 +279,6 @@ function buildListView(data) {
             const courseContent = document.createElement('div');
             courseContent.className = `tab-pane fade ${isActive ? 'show active' : ''}`;
             courseContent.id = courseTabId;
-            courseContent.setAttribute('role', 'tabpanel');
             
             const contentRow = document.createElement('div');
             contentRow.className = 'row mt-3';
@@ -308,18 +295,23 @@ function buildListView(data) {
                 week.sections.forEach((section) => {
                     const fullTitle = `${semester.title} / ${course.title} / ${week.title} / ${section.title}`;
                     
+                    // L4 列表项
+                    const listItem = document.createElement('li'); // 创建 li 元素
                     const sectionLink = document.createElement('a');
                     sectionLink.className = 'section-link';
                     sectionLink.textContent = section.title;
                     sectionLink.href = '#'; 
                     
+                    // 绑定点击事件
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         // 点击右侧列表时，loadVideo 会自动查找左侧对应的元素
                         loadVideo(section.url, fullTitle); 
                     };
-
-                    sectionList.innerHTML += `<li>${sectionLink.outerHTML}</li>`;
+                    
+                    // 修复 BUG：使用 DOM API 附加元素，保留事件监听器
+                    listItem.appendChild(sectionLink);
+                    sectionList.appendChild(listItem);
                 });
                 weekColumn.appendChild(sectionList);
                 contentRow.appendChild(weekColumn);
