@@ -1,11 +1,11 @@
 // 1. 获取 HTML 元素引用
-const sidebarNavTree = document.getElementById('video-navigation-tree'); // 左侧导航栏
-const listView = document.getElementById('list-view'); // 右侧内容区: 列表
-const playerView = document.getElementById('player-view'); // 右侧内容区: 播放器
-const headerVideoTitle = document.getElementById('header-video-title'); // 顶部标题
+const sidebarNavTree = document.getElementById('video-navigation-tree'); 
+const listView = document.getElementById('list-view'); 
+const playerView = document.getElementById('player-view'); 
+const headerVideoTitle = document.getElementById('header-video-title'); 
 const videoPlayer = document.getElementById('video-player');
-const toggleListBtn = document.getElementById('toggle-list-btn'); // 顶部“完整列表”按钮
-const courseCatalogContainer = document.getElementById('course-catalog-container'); // 列表容器
+const toggleListBtn = document.getElementById('toggle-list-btn'); 
+const courseCatalogContainer = document.getElementById('course-catalog-container');
 
 let currentActiveLink = null; // 跟踪当前高亮链接
 
@@ -17,15 +17,16 @@ function toggleView(mode) {
     if (mode === 'list') {
         listView.classList.remove('d-none');
         playerView.classList.add('d-none');
-        toggleListBtn.classList.add('d-none'); // 隐藏按钮
-        headerVideoTitle.classList.add('d-none'); // 隐藏顶部标题
-        videoPlayer.pause(); // 列表模式下暂停播放
+        toggleListBtn.classList.add('d-none'); // 隐藏“完整列表”按钮
+        headerVideoTitle.classList.remove('d-none'); // Bug Fix: 列表模式下顶部标题显示“请从左侧选择”
+        headerVideoTitle.textContent = '请从左侧选择课程小节';
+        videoPlayer.pause(); 
         
     } else if (mode === 'player') {
         listView.classList.add('d-none');
         playerView.classList.remove('d-none');
-        toggleListBtn.classList.remove('d-none'); // 显示按钮
-        headerVideoTitle.classList.remove('d-none'); // 显示顶部标题
+        toggleListBtn.classList.remove('d-none'); // 显示“完整列表”按钮
+        headerVideoTitle.classList.remove('d-none'); // 显示当前播放标题
     }
 }
 
@@ -60,9 +61,8 @@ function loadVideo(url, fullTitle, linkElement) {
 
 
 /**
- * 3. 构建新的列表视图 (L1/L2 Tab/L3/L4 List)
- * 这是首页/主页的全部内容
- * @param {Array} data - 从 videos_index.json 加载的结构化数据
+ * 3. 构建新的列表视图 (L1/L2 Tab/L3/L4 List) - 列表视图逻辑不变
+ * ... (与上一个版本保持一致，因为它只影响右侧的列表首页)
  */
 function buildListView(data) {
     courseCatalogContainer.innerHTML = ''; 
@@ -72,19 +72,14 @@ function buildListView(data) {
         return;
     }
     
-    // 默认不加载播放器，只生成列表
     const fullCatalogHTML = [];
     
-    // 遍历 L1 (学期)
     data.forEach((semester, index1) => {
         const semesterBlock = document.createElement('div');
-        semesterBlock.className = 'semester-block shadow'; // L1: 学期块
+        semesterBlock.className = 'semester-block shadow'; 
         semesterBlock.innerHTML = `<h5 class="text-white mb-3">${semester.title}</h5>`;
         
-        // L2: 课程横向 Tab 导航
         const tabListId = `tab-list-${index1}`;
-        const tabContentId = `tab-content-${index1}`;
-        
         const tabList = document.createElement('ul');
         tabList.className = 'nav nav-tabs border-secondary mt-3 mb-3';
         tabList.id = tabListId;
@@ -92,13 +87,11 @@ function buildListView(data) {
 
         const tabContent = document.createElement('div');
         tabContent.className = 'tab-content';
-        tabContent.id = tabContentId;
         
         semester.courses.forEach((course, index2) => {
             const courseTabId = `course-${index1}-${index2}`;
             const isActive = index2 === 0; 
 
-            // L2 Tab 标题
             const tabItem = document.createElement('li');
             tabItem.className = 'nav-item';
             tabItem.setAttribute('role', 'presentation');
@@ -109,7 +102,6 @@ function buildListView(data) {
             `;
             tabList.appendChild(tabItem);
 
-            // L2 Tab 内容区域
             const courseContent = document.createElement('div');
             courseContent.className = `tab-pane fade ${isActive ? 'show active' : ''}`;
             courseContent.id = courseTabId;
@@ -118,19 +110,16 @@ function buildListView(data) {
             const contentRow = document.createElement('div');
             contentRow.className = 'row mt-3';
             
-            // 遍历 L3 (周)
             course.weeks.forEach((week) => {
                 const weekColumn = document.createElement('div');
                 weekColumn.className = 'col-lg-3 col-md-4 col-sm-6 mb-4'; 
                 
-                weekColumn.innerHTML = `<h6 class="week-title">${week.title}</h6>`; // L3: 周标题
+                weekColumn.innerHTML = `<h6 class="week-title">${week.title}</h6>`; 
                 
-                // L4: 小节无序列表
                 const sectionList = document.createElement('ul');
                 sectionList.className = 'section-list'; 
                 
                 week.sections.forEach((section) => {
-                    // 构建完整的标题字符串，用于顶部导航栏显示
                     const fullTitle = `${semester.title} / ${course.title} / ${week.title} / ${section.title}`;
                     
                     const sectionLink = document.createElement('a');
@@ -138,12 +127,9 @@ function buildListView(data) {
                     sectionLink.textContent = section.title;
                     sectionLink.href = '#'; 
                     
-                    // 绑定点击事件，调用 loadVideo 函数
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink);
-                        
-                        // 由于导航栏是单独的，我们还需要在左侧导航栏中找到对应的链接进行高亮
                         highlightSidebarLink(section.url);
                     };
 
@@ -165,7 +151,7 @@ function buildListView(data) {
 
 
 /**
- * 4. 构建左侧永久可见的树形导航栏
+ * 4. 构建左侧永久可见的树形导航栏 (使用新的 CSS 类名)
  * @param {Array} data - JSON 数据
  */
 function buildSidebarNavigation(data) {
@@ -174,21 +160,24 @@ function buildSidebarNavigation(data) {
     // 遍历 L1 (学期)
     data.forEach((semester, index1) => {
         const semesterHeader = document.createElement('div');
-        semesterHeader.className = 'list-group-item bg-dark border-secondary text-primary fw-bold p-2';
+        // 使用新的 L1 CSS 类
+        semesterHeader.className = 'sidebar-l1-header'; 
         semesterHeader.textContent = semester.title;
         sidebarNavTree.appendChild(semesterHeader);
 
         // L2 (课程)
         semester.courses.forEach((course, index2) => {
             const courseHeader = document.createElement('div');
-            courseHeader.className = 'list-group-item bg-dark-sidebar border-secondary fw-semibold p-2';
+            // 使用新的 L2 CSS 类
+            courseHeader.className = 'sidebar-l2-header';
             courseHeader.textContent = course.title;
             sidebarNavTree.appendChild(courseHeader);
 
             // 遍历 L3 (周) 和 L4 (小节)
             course.weeks.forEach((week) => {
                 const weekHeader = document.createElement('div');
-                weekHeader.className = 'list-group-item bg-dark-sidebar border-secondary ps-3 py-1 fw-normal text-muted'; 
+                // 使用新的 L3 CSS 类
+                weekHeader.className = 'sidebar-l3-header'; 
                 weekHeader.textContent = week.title;
                 sidebarNavTree.appendChild(weekHeader);
 
@@ -196,12 +185,12 @@ function buildSidebarNavigation(data) {
                     const fullTitle = `${semester.title} / ${course.title} / ${week.title} / ${section.title}`;
                     
                     const sectionLink = document.createElement('a');
-                    sectionLink.className = 'list-group-item list-group-item-action bg-dark-sidebar border-secondary py-1 ps-4 section-link-sidebar';
+                    // 使用新的 L4 CSS 类
+                    sectionLink.className = 'section-link-sidebar';
                     sectionLink.textContent = section.title;
                     sectionLink.href = '#'; 
-                    sectionLink.setAttribute('data-url', section.url); // 存储 URL 用于高亮和播放
+                    sectionLink.setAttribute('data-url', section.url); 
                     
-                    // 绑定点击事件，调用 loadVideo 函数
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink);
@@ -215,7 +204,7 @@ function buildSidebarNavigation(data) {
 }
 
 /**
- * 5. 高亮左侧导航栏的对应链接
+ * 5. 高亮左侧导航栏的对应链接 (高亮逻辑不变)
  * @param {string} url - 视频的 URL
  */
 function highlightSidebarLink(url) {
@@ -227,26 +216,23 @@ function highlightSidebarLink(url) {
         link.classList.add('active');
         currentActiveLink = link;
         
-        // 确保被点击的链接可见（如果有滚动条）
         link.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
 
 /**
- * 6. 主执行流程：加载 JSON 数据
+ * 6. 主执行流程：加载 JSON 数据 (保持不变)
  */
 document.addEventListener('DOMContentLoaded', () => {
     // 初始显示列表视图 (满足要求：首次载入显示完整列表)
     toggleView('list'); 
     
-    // 点击顶部品牌/Logo 时返回列表视图
     document.getElementById('home-link').onclick = (e) => {
         e.preventDefault();
         toggleView('list');
     };
     
-    // 使用 fetch API 加载 JSON 文件
     fetch('videos_index.json')
         .then(response => {
             if (!response.ok) {
@@ -255,9 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            // 构建右侧的列表视图 (首页)
             buildListView(data); 
-            // 构建左侧的永久导航栏
             buildSidebarNavigation(data); 
         })
         .catch(error => {
