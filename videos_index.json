@@ -10,7 +10,6 @@
                         "sections": [
                             {
                                 "title": "第0小节",
-<<<<<<< HEAD
                                 "url": "https://v.ehm84542025.site/term2/final/final-w7c0.mp4",
                                 "duration": 49
                             },
@@ -33,24 +32,6 @@
                                 "title": "回顾总结",
                                 "url": "https://v.ehm84542025.site/term2/final/final-w7recap.mp4",
                                 "duration": 76
-=======
-                                "url": "https://v.ehm84542025.site/term2/final/final-w7c0.mp4"
-                            },
-                            {
-                                "title": "第1小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w7c1.mp4"
-                            },
-                            {
-                                "title": "第2小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w7c2.mp4"
-                            },
-                            {
-                                "title": "第3小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w7c3.mp4"
-                            },
-                            {
-                                "title": "回顾总结",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w7recap.mp4"
                             }
                         ]
                     },
@@ -59,27 +40,33 @@
                         "sections": [
                             {
                                 "title": "第0小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w12c0.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w12c0.mp4",
+                                "duration": 68
                             },
                             {
                                 "title": "第1小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w12c1.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w12c1.mp4",
+                                "duration": 1807
                             },
                             {
                                 "title": "第2小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w12c2.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w12c2.mp4",
+                                "duration": 1045
                             },
                             {
                                 "title": "第3小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w12c3.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w12c3.mp4",
+                                "duration": 2773
                             },
                             {
                                 "title": "第4小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w12c4.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w12c4.mp4",
+                                "duration": 494
                             },
                             {
                                 "title": "回顾总结",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w12recap.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w12recap.mp4",
+                                "duration": 125
                             }
                         ]
                     },
@@ -88,32 +75,38 @@
                         "sections": [
                             {
                                 "title": "第0小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w13c0.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w13c0.mp4",
+                                "duration": 62
                             },
                             {
                                 "title": "第1小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w13c1.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w13c1.mp4",
+                                "duration": 282
                             },
                             {
                                 "title": "第2小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w13c2.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w13c2.mp4",
+                                "duration": 2289
                             },
                             {
                                 "title": "第3小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w13c3.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w13c3.mp4",
+                                "duration": 1500
                             },
                             {
                                 "title": "第4小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w13c4.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w13c4.mp4",
+                                "duration": 634
                             },
                             {
                                 "title": "第5小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w13c5.mp4"
+                                "url": "https://v.ehm84542025.site/term2/final/final-w13c5.mp4",
+                                "duration": 623
                             },
                             {
                                 "title": "回顾总结",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w13recap.mp4"
->>>>>>> 864f3131fcddfbee062867a1d38abd30bd0d25e3
+                                "url": "https://v.ehm84542025.site/term2/final/final-w13recap.mp4",
+                                "duration": 236
                             }
                         ]
                     },
@@ -122,7 +115,6 @@
                         "sections": [
                             {
                                 "title": "第0小节",
-<<<<<<< HEAD
                                 "url": "https://v.ehm84542025.site/term2/final/final-w14c0.mp4",
                                 "duration": 63
                             },
@@ -150,29 +142,6 @@
                                 "title": "回顾总结",
                                 "url": "https://v.ehm84542025.site/term2/final/final-w14recap.mp4",
                                 "duration": 85
-=======
-                                "url": "https://v.ehm84542025.site/term2/final/final-w14c0.mp4"
-                            },
-                            {
-                                "title": "第1小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w14c1.mp4"
-                            },
-                            {
-                                "title": "第2小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w14c2.mp4"
-                            },
-                            {
-                                "title": "第3小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w14c3.mp4"
-                            },
-                            {
-                                "title": "第4小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w14c4.mp4"
-                            },
-                            {
-                                "title": "回顾总结",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w14recap.mp4"
->>>>>>> 864f3131fcddfbee062867a1d38abd30bd0d25e3
                             }
                         ]
                     },
@@ -181,7 +150,6 @@
                         "sections": [
                             {
                                 "title": "第0小节",
-<<<<<<< HEAD
                                 "url": "https://v.ehm84542025.site/term2/final/final-w15c0.mp4",
                                 "duration": 62
                             },
@@ -204,25 +172,6 @@
                                 "title": "回顾总结",
                                 "url": "https://v.ehm84542025.site/term2/final/final-w15recap.mp4",
                                 "duration": 192
-=======
-                                "url": "https://v.ehm84542025.site/term2/final/final-w15c0.mp4"
-                            },
-                            {
-                                "title": "第1小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w15c1.mp4"
-                            },
-                            {
-                                "title": "第2小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w15c2.mp4"
-                            },
-                            {
-                                "title": "第3小节",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w15c3.mp4"
-                            },
-                            {
-                                "title": "回顾总结",
-                                "url": "https://v.ehm84542025.site/term2/final/final-w15recap.mp4"
->>>>>>> 864f3131fcddfbee062867a1d38abd30bd0d25e3
                             }
                         ]
                     }
