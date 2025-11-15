@@ -178,6 +178,10 @@ video::cue {
     /* 1. 移除默认的半透明背景色块 */
     background-color: transparent !important;
     
+    font-size: 24px; /* 示例：将字体大小设置为 24 像素 */
+    /* 或者 */
+    /* font-size: 1.5em; */ /* 示例：相对于父元素字体大小的 1.5 倍 */
+
     /* 2. 设置文字颜色为白色 (默认可能就是白色，但为保险起见) */
     color: white !important;
     
