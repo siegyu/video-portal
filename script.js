@@ -81,7 +81,7 @@ function toggleIcon(headerElement, isExpanded) {
 
 
 /**
- * 2. 核心函数：加载视频并更新标题 (更新: 添加字幕加载逻辑)
+ * 2. 核心函数：加载视频并更新标题 (更新: 添加字幕加载逻辑和 crossorigin)
  */
 function loadVideo(url, fullTitle, linkElement) {
     toggleView('player'); 
@@ -89,6 +89,13 @@ function loadVideo(url, fullTitle, linkElement) {
     headerVideoTitle.textContent = fullTitle;
     
     if (videoPlayer.src !== url) {
+        
+        // ********** 核心修复：添加 crossorigin 属性 **********
+        // 必须在设置 src 之前设置此属性，以便浏览器使用匿名模式处理跨域请求。
+        // 这对于跨域加载字幕 (.srt) 是必需的。
+        videoPlayer.crossOrigin = 'anonymous'; 
+        // ******************************************************
+        
         videoPlayer.src = url;
         
         // --- 字幕功能实现 ---
