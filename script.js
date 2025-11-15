@@ -28,7 +28,7 @@ function formatDuration(seconds) {
 }
 
 /**
- * Helper function: 根据视频 URL 推导字幕 URL
+ * Helper function: 根据视频 URL 推导字幕 URL (更新为 VTT 格式)
  */
 function getSubtitleUrl(videoUrl, langCode = 'zh') {
     // 假设视频 URL 类似于 https://videos.domain/path/filename.mp4
@@ -39,8 +39,8 @@ function getSubtitleUrl(videoUrl, langCode = 'zh') {
         return null;
     }
     
-    // 替换 .mp4 为 .{langCode}.srt
-    const subtitleFileName = fileNameWithExt.replace('.mp4', `.${langCode}.srt`);
+    // 核心修改: 替换 .mp4 为 .{langCode}.vtt
+    const subtitleFileName = fileNameWithExt.replace('.mp4', `.${langCode}.vtt`);
     
     // 重建 URL
     urlParts.push(subtitleFileName);
