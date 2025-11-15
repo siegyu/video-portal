@@ -78,16 +78,43 @@ html, body {
 }
 
 /* L4: 小节链接 - 最终层级，实现高亮和悬停反馈 */
-.section-link-sidebar {
+/* ---------------------------------------------------- */
+/* L4: 小节链接 (父容器) */
+/* ---------------------------------------------------- */
+/* * 必须将 L4 链接设置为 position: relative，
+ * 这样才能让内部的时长 span 相对于它进行绝对定位。
+ */
+ .section-link-sidebar {
+    position: relative; /* 允许内部元素绝对定位 */
     background-color: #1E1E1E !important; 
     color: #E0E0E0 !important;
-    padding: 6px 10px !important; /* 增大上下内边距 */
-    padding-left: 55px !important; /* 最终缩进 45px */
+    padding: 6px 10px !important; 
+    padding-left: 55px !important; 
     border: none !important;
     text-decoration: none;
     transition: background-color 0.2s;
     display: block;
     font-size: 0.85rem;
+    overflow: hidden; /* 确保内容不溢出 */
+}
+
+/* ---------------------------------------------------- */
+/* NEW: 时长显示样式 (实现您需要的效果) */
+/* ---------------------------------------------------- */
+/* * 这段 CSS 将会把时长 (.duration-display) 从标题流中抽离，
+ * 并将其“钉”在父容器的右侧中间。
+ */
+.duration-display {
+    font-size: 0.75rem; 
+    color: #888888; 
+    font-weight: normal;
+    margin-left: 5px;
+    
+    /* 核心：实现靠右、居中、独立布局 */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .section-link-sidebar:hover {
