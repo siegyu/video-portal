@@ -1,103 +1,145 @@
-/* 2. 页面整体呈暗色调 & 5. 字体缩小 & 4. 播放界面缩小 */
 /* ---------------------------------------------------- */
-
-/* 全局暗色调设置 */
+/* 全局暗色调和基本布局 (保持不变) */
+/* ---------------------------------------------------- */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    /* 2. 页面整体呈暗色调 - 设置深灰色背景和浅色默认文本 */
     background-color: #121212; 
-    color: #E0E0E0; /* 浅灰色文本 */
+    color: #E0E0E0; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 确保内容区域正确占满屏幕剩余高度 */
-.h-100-main {
-    height: calc(100vh - 48px); /* 导航条高度约为48px，留出空间 */
+.h-remaining-viewport {
+    height: calc(100vh - 48px); 
+    overflow: hidden;
+}
+
+#sidebar {
+    width: 280px; 
     overflow-y: auto; 
-}
-
-/* 顶部导航条字体缩小 */
-.navbar-brand, .navbar-text {
-    /* 5. 顶部字体缩小 */
-    font-size: 0.9rem; 
+    height: 100%; 
+    background-color: #1E1E1E !important; 
+    font-size: 0.85rem; 
 }
 
 /* ---------------------------------------------------- */
-/* 4. 播放界面缩小至右栏的约90% */
-/* ---------------------------------------------------- */
-#player-view {
-    /* 居中播放器 */
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-}
-
-.video-wrapper {
-    /* 4. 限制播放器最大宽度为容器的90% */
-    max-width: 90%; 
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    /* 播放器下缘溢出屏幕的问题通过 .h-100-main 的 overflow-y: auto 解决了，同时设置了90%的限制 */
-}
-
-/* ---------------------------------------------------- */
-/* 3. 课程列表布局样式 (实现 L1/L2/L3/L4 的视觉效果) */
+/* 左侧导航栏样式 (Sidebar) - 增强层次感和缩进 */
 /* ---------------------------------------------------- */
 
-/* L1: 学期块样式 */
-.semester-block {
-    background-color: #1E1E1E; /* 稍亮的暗色块 */
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 30px;
+/* L1, L2, L3 标题通用样式：Flexbox 布局，增加上下内边距 */
+.sidebar-l1-header, .sidebar-l2-header, .sidebar-l3-header {
+    display: flex !important; 
+    justify-content: space-between; 
+    align-items: center;
+    border: none !important;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    user-select: none;
+    /* 新增：增大上下内边距，增加行距 */
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
 }
 
-/* L3: 周标题样式 */
-.week-title {
-    color: #90CAF9; /* 浅蓝色标题 */
-    border-bottom: 1px solid #333;
-    padding-bottom: 5px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-size: 1rem; /* 5. 字体缩小 */
+/* L1: 学期 - 突出显示，最少缩进 */
+.sidebar-l1-header {
+    background-color: #282828 !important; 
+    color: #90CAF9 !important; /* 主题色蓝 */
+    padding-left: 10px !important; 
+    margin-top: 8px; /* 增加 L1 之间的垂直间距 */
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+.sidebar-l1-header:hover {
+    background-color: #333333 !important;
+}
+
+/* L2: 课程 - 字体略小，增加缩进 */
+.sidebar-l2-header {
+    background-color: #1E1E1E !important; 
+    color: #C0C0C0 !important; /* 浅灰色 */
+    padding-left: 25px !important; /* 缩进 15px */
     font-weight: 500;
 }
-
-/* L4: 小节列表样式 */
-.section-list {
-    padding-left: 0;
-    list-style: none; /* 移除默认符号 */
+.sidebar-l2-header:hover {
+    background-color: #282828 !important;
 }
 
-.section-list li {
-    margin-bottom: 5px;
+/* L3: 周 - 字体更小，更多缩进，暗淡颜色 */
+.sidebar-l3-header {
+    background-color: #1E1E1E !important; 
+    color: #888888 !important; /* 暗淡文本 */
+    padding-left: 40px !important; /* 缩进 30px */
+    font-size: 0.8rem;
+}
+.sidebar-l3-header:hover {
+    background-color: #282828 !important;
 }
 
-.section-link {
-    color: #CCCCCC; /* 链接颜色 */
+/* L4: 小节链接 - 最终层级，实现高亮和悬停反馈 */
+.section-link-sidebar {
+    background-color: #1E1E1E !important; 
+    color: #E0E0E0 !important;
+    padding: 6px 10px !important; /* 增大上下内边距 */
+    padding-left: 55px !important; /* 最终缩进 45px */
+    border: none !important;
     text-decoration: none;
-    font-size: 0.9rem; /* 5. 字体缩小 */
-    transition: color 0.2s;
-    display: block; /* 使链接更容易点击 */
+    transition: background-color 0.2s;
+    display: block;
+    font-size: 0.85rem;
 }
 
-.section-link:hover, .section-link.active {
-    color: #4CAF50; /* 鼠标悬停或选中时高亮绿色 */
-    text-decoration: underline;
+.section-link-sidebar:hover {
+    background-color: #333333 !important; /* 悬停颜色 */
+    color: #E0E0E0 !important;
 }
 
-/* L2 Tab 样式优化 (暗色背景下的 Tab 切换) */
-.nav-tabs .nav-link {
-    color: #ccc;
-    background-color: #282828;
-    border-color: #444;
+/* 正在播放 (Active) 的小节 */
+.section-link-sidebar.active {
+    background-color: #4CAF50 !important; /* 突出绿色背景 */
+    color: #ffffff !important;
+    font-weight: bold;
 }
 
-.nav-tabs .nav-link.active {
-    color: #fff;
-    background-color: #121212;
-    border-color: #444 #444 #121212; /* 底部颜色与主体背景一致 */
+/* 折叠/展开图标样式 */
+.collapse-icon {
+    font-size: 0.8em;
+    transition: transform 0.2s;
+    flex-shrink: 0; 
+    margin-right: 10px; /* 确保图标距离右侧边界有固定间距 */
+    color: #777; /* 图标颜色 */
+}
+
+/* L2/L3 content container (用于确保L4 link的hover效果不会被上级背景色干扰) */
+.collapse {
+    background-color: #1E1E1E;
+}
+
+/* ---------------------------------------------------- */
+/* 右侧播放器区域 (保持不变) */
+/* ---------------------------------------------------- */
+#player-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+}
+
+.video-wrapper-container {
+    flex-grow: 1; 
+    min-height: 0; 
+    max-height: calc(100% - 30px); 
+    padding: 0 5%; 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    position: relative; 
+}
+
+#video-player {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto; 
+    height: auto;
+    object-fit: contain; 
 }
