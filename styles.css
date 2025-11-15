@@ -173,25 +173,43 @@ html, body {
     object-fit: contain; 
 }
 
-/* 使用 ::cue 伪元素来控制字幕的样式 */
-video::cue {
-    /* 1. 移除默认的半透明背景色块 */
-    background-color: transparent !important;
-    
-    font-size: 24px; /* 示例：将字体大小设置为 24 像素 */
-    /* 或者 */
-    /* font-size: 1.5em; */ /* 示例：相对于父元素字体大小的 1.5 倍 */
+/* ---------------------------------------------------- */
+/* L5: WebVTT 字幕基础样式 (静态部分) */
+/* ---------------------------------------------------- */
 
-    /* 2. 设置文字颜色为白色 (默认可能就是白色，但为保险起见) */
+video::cue {
+    /* 移除默认背景，并设置颜色和阴影 (保留之前的优化) */
+    background-color: transparent !important;
     color: white !important;
-    
-    /* 3. 添加文字阴影 (实现您所说的“只存在于字符边缘的阴影”) */
-    /* 示例：添加一层黑色描边和柔和的阴影，增强对比度 */
     text-shadow: 
-        1px 1px 2px rgba(0, 0, 0, 0.9), /* 标准阴影 */
-        -1px -1px 0 #000,             /* 描边效果 (上左) */
-        1px -1px 0 #000,              /* 描边效果 (上右) */
-        -1px 1px 0 #000;              /* 描边效果 (下左) */
-        
-    /* 注意：!important 是为了覆盖浏览器的默认样式和内置的视频播放器样式 */
+        1px 1px 2px rgba(0, 0, 0, 0.9), 
+        -1px -1px 0 #000,             
+        1px -1px 0 #000,              
+        -1px 1px 0 #000;
+}
+
+
+/* ---------------------------------------------------- */
+/* L6: WebVTT 字幕响应式字体大小 */
+/* ---------------------------------------------------- */
+
+/* 1. 视口高度 小于 900px 时: 24px (手机或小窗口) */
+@media (max-height: 899px) {
+    video::cue {
+        font-size: 24px !important; 
+    }
+}
+
+/* 2. 视口高度 900px 到 1199px 时: 28px (中等窗口) */
+@media (min-height: 900px) and (max-height: 1199px) {
+    video::cue {
+        font-size: 28px !important;
+    }
+}
+
+/* 3. 视口高度 大于等于 1200px 时: 36px (大屏幕或全屏) */
+@media (min-height: 1200px) {
+    video::cue {
+        font-size: 36px !important;
+    }
 }
