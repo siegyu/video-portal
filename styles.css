@@ -172,3 +172,22 @@ html, body {
     height: auto;
     object-fit: contain; 
 }
+
+/* 使用 ::cue 伪元素来控制字幕的样式 */
+video::cue {
+    /* 1. 移除默认的半透明背景色块 */
+    background-color: transparent !important;
+    
+    /* 2. 设置文字颜色为白色 (默认可能就是白色，但为保险起见) */
+    color: white !important;
+    
+    /* 3. 添加文字阴影 (实现您所说的“只存在于字符边缘的阴影”) */
+    /* 示例：添加一层黑色描边和柔和的阴影，增强对比度 */
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.9), /* 标准阴影 */
+        -1px -1px 0 #000,             /* 描边效果 (上左) */
+        1px -1px 0 #000,              /* 描边效果 (上右) */
+        -1px 1px 0 #000;              /* 描边效果 (下左) */
+        
+    /* 注意：!important 是为了覆盖浏览器的默认样式和内置的视频播放器样式 */
+}
