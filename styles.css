@@ -145,6 +145,109 @@ html, body {
     background-color: #1E1E1E;
 }
 
+
+/* ---------------------------------------------------- */
+/* L7: 课程目录 (ListView) 样式优化 */
+/* ---------------------------------------------------- */
+
+/* 1. 课程内容容器（确保内容不被顶部 Tab 遮挡）*/
+.course-catalog-content {
+    padding-top: 15px; /* 增加与课程 Tab 的间距 */
+}
+
+/* 2. 周标题样式 (L3 - 纵向排列) */
+/* ---------------------------------------------------- */
+.week-title {
+    /* 保持纵向排列，使用 h6 默认的 block 行为 */
+    color: #86e7ff; /* 突出周标题 */
+    font-weight: bold;
+    margin-bottom: 8px; /* 标题与小节区块的间距 */
+    padding-bottom: 4px; 
+    border-bottom: 1px solid #333333; /* 增加分隔线 */
+}
+
+/* 3. 小节列表容器 (L4 - 紧凑尾随式排列) */
+/* ---------------------------------------------------- */
+.section-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    /* 核心: 使用 Flexbox 实现紧凑的尾随式排列和自然换行 */
+    display: flex;
+    flex-wrap: wrap; /* 允许换行 */
+    gap: 10px; /* 小节区块之间的间距 */
+    /* 确保 section-list 本身有底部边距 */
+    margin-bottom: 20px; 
+}
+
+/* 4. 小节区块 (L4 - 区块化、带框线、固定结构) */
+/* ---------------------------------------------------- */
+.section-link {
+    /* 使用内联块确保区块能在 Flex 容器中尾随排列 */
+    display: flex; 
+    align-items: center;
+    background-color: #282828; 
+    color: #E0E0E0;
+    text-decoration: none;
+    padding: 8px 10px; /* 增加左右内边距 */
+    border: 1px solid #444444; /* 边框线 */
+    border-radius: 4px; /* 轻微圆角 */
+    font-size: 0.9rem;
+    line-height: 1.2; /* 调整行高 */
+    transition: background-color 0.2s, border-color 0.2s;
+    /* 限制最大宽度以避免名称过长占用太多空间 */
+    max-width: 350px; 
+    /* 允许 section-title-text 溢出和截断 */
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    flex-shrink: 0; 
+}
+
+.section-link:hover {
+    background-color: #3b3b3b;
+    border-color: #86e7ff; /* 悬停时边框高亮 */
+}
+
+/* 小节名称文本 (确保它占据剩余空间) */
+.section-title-text {
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    /* 确保名称部分能伸展，并推开duration-display */
+    flex-grow: 1; 
+    margin-right: 10px; /* 名称与时长之间的间隔 */
+}
+
+/* 5. 时长显示样式 (反色醒目设计) */
+/* ---------------------------------------------------- */
+.section-link .duration-display {
+    /* 清除 sidebar 样式的影响 (如果有的话) */
+    position: static; 
+    transform: none; 
+    
+    background-color: #66af4c; /* 突出绿色背景 (反色) */
+    color: #ffffff; /* 白色文本 */
+    padding: 2px 6px;
+    /* margin-left: 10px; 由 section-title-text 的 margin-right 保证 */
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    flex-shrink: 0; /* 确保时长区块不会被压缩 */
+}
+
+/* 6. 正在播放 (Active) 的小节区块 */
+/* ---------------------------------------------------- */
+.section-link.active {
+    background-color: #557e48; /* 较暗的激活背景色 */
+    border-color: #66af4c; 
+    font-weight: bold;
+}
+.section-link.active .duration-display {
+    background-color: #ffffff; /* 激活时时长背景反转为白色 */
+    color: #121212; /* 文本反转为黑色 */
+}
+
+
 /* ---------------------------------------------------- */
 /* 右侧播放器区域 (保持不变) */
 /* ---------------------------------------------------- */
