@@ -175,8 +175,7 @@ function createCollapsibleHeader(title, targetId, className, paddingLeft) {
     header.appendChild(titleSpan);
 
     const icon = document.createElement('span');
-    icon.className = 'collapse-icon bi bi-chevron-right'; 
-    icon.innerHTML = '▶'; 
+    icon.className = 'collapse-icon bi bi-chevron-right';  
     header.appendChild(icon);
     
     return header;
