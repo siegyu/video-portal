@@ -46,11 +46,13 @@ function getSubtitleUrl(videoUrl, langCode = 'zh') {
  */
 function toggleView(showList) {
     if (showList) {
+        // 切换到列表视图
         listView.style.display = 'flex';
         playerView.style.display = 'none';
         headerVideoTitle.textContent = '所有课程目录';
         toggleListBtn.textContent = '播放器';
     } else {
+        // 切换到播放器视图
         listView.style.display = 'none';
         playerView.style.display = 'flex';
         toggleListBtn.textContent = '课程目录';
@@ -72,7 +74,7 @@ function toggleIcon(header, isExpanded) {
  * 核心函数: 加载视频到播放器
  */
 function loadVideo(videoUrl, title, clickedLink) {
-    // 1. 切换到播放器视图
+    // 1. 切换到播放器视图 (确保这是第一步)
     toggleView(false); 
     
     // 2. 更新头部标题
@@ -151,7 +153,7 @@ function createCollapsibleContent(id) {
 
 
 /**
- * 4. 构建左侧永久可见的树形导航栏 (已修复L3折叠时L2图标错误变化的问题)
+ * 4. 构建左侧永久可见的树形导航栏 (侧边栏)
  */
 function buildSidebarNavigation(data) {
     sidebarNavTree.innerHTML = ''; 
@@ -208,7 +210,7 @@ function buildSidebarNavigation(data) {
                     const fullTitle = `${semester.title} / ${course.title} / ${week.title} / ${section.title}`;
                     const durationText = formatDuration(section.duration);
 
-                    // --- L4 (小节链接 - 增加时长显示) ---
+                    // --- L4 (小节链接 - 侧边栏) ---
                     const sectionLink = document.createElement('a');
                     sectionLink.className = 'section-link-sidebar'; // 使用侧边栏专用类
                     sectionLink.href = '#'; 
@@ -217,6 +219,8 @@ function buildSidebarNavigation(data) {
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink);
+                        // BUG 修复：显式调用，确保视图切换
+                        toggleView(false); 
                     };
 
                     L3Content.appendChild(sectionLink);
@@ -227,17 +231,16 @@ function buildSidebarNavigation(data) {
 }
 
 /**
- * Helper function: 自动展开当前视频所在的层级
+ * Helper function: 自动展开当前视频所在的层级 (暂略)
  */
 function autoExpandHierarchy(url, data) {
     if (!url || !data) return;
 
-    // 这是一个复杂的操作，依赖于 bootstrap 的 collapse API
-    // 略过细节实现，仅保持函数结构，如果有需求再细化
+    // 略过细节实现
 }
 
 /**
- * 5. 构建右侧课程目录视图 (更新: 采用紧凑的区块布局)
+ * 5. 构建右侧课程目录视图 (初始页 - ListView)
  */
 function buildListView(data) {
     courseCatalogContainer.innerHTML = ''; 
@@ -248,7 +251,7 @@ function buildListView(data) {
     
     data.forEach((semester, index1) => {
         const semesterBlock = document.createElement('div');
-        semesterBlock.className = 'semester-block shadow mb-5 p-4'; // 增加内边距
+        semesterBlock.className = 'semester-block shadow mb-5 p-4';
         semesterBlock.innerHTML = `<h5 class="text-white mb-3">${semester.title}</h5>`;
         
         const tabListId = `tab-list-${index1}`;
@@ -273,10 +276,10 @@ function buildListView(data) {
             tabList.appendChild(tabItem);
 
             const courseContent = document.createElement('div');
-            courseContent.className = `tab-pane fade ${isActive ? 'show active' : ''} course-catalog-content`; // 添加自定义类
+            courseContent.className = `tab-pane fade ${isActive ? 'show active' : ''} course-catalog-content`;
             courseContent.id = courseTabId;
             
-            // --- 核心修改: L3 周标题 (纵向) 和 L4 小节 (紧凑区块) ---
+            // --- L3 周标题 (纵向) 和 L4 小节 (紧凑区块) ---
             
             course.weeks.forEach((week) => {
                 // L3 周区块
@@ -308,7 +311,8 @@ function buildListView(data) {
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink); // 传递链接以便更新 active 状态
-                        toggleView(false); // 强制切换到播放器视图
+                        // BUG 修复：显式调用，确保视图切换
+                        toggleView(false); 
                     };
                     
                     sectionList.appendChild(sectionLink);
@@ -360,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. 切换视图按钮事件
     toggleListBtn.addEventListener('click', () => {
-        // 只有当播放器在显示时，才需要判断是切换回列表，还是从列表切换到播放器
+        // 判断当前显示的是否是播放器
         const isPlayerVisible = playerView.style.display !== 'none';
         
         if (isPlayerVisible) {
@@ -370,7 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // 从列表视图切换回播放器视图 (如果之前有激活的视频)
             toggleView(false);
         }
-        // 如果没有激活链接且当前是列表，则不操作
     });
     
     // 4. 初始化视图
