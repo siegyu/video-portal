@@ -57,7 +57,7 @@ def get_video_duration(file_path):
         print(f"警告: 无法从 ffprobe 输出中解析时长: {duration_str}")
         return 0
 
-# --- 核心函数 (已修改) ---
+# --- 核心函数 (已修改：移除 'final' 目录限制) ---
 
 def generate_video_index(scan_dir):
     """
@@ -85,16 +85,21 @@ def generate_video_index(scan_dir):
         if path_components == ['.']:
             continue
             
+        # 仅处理根目录下的第一级子目录作为课程目录
         if len(path_components) != 1:
             continue
             
         course_folder = path_components[0]
         
-        if course_folder != 'final':
-            print(f"警告：跳过非 'final' 课程目录: {course_folder}")
-            continue
+        # --- 修改开始：移除对 'final' 目录的硬性限制 ---
+        # 之前的代码是:
+        # if course_folder != 'final':
+        #     print(f"警告：跳过非 'final' 课程目录: {course_folder}")
+        #     continue
             
-        course_title = "课程：final"
+        # 动态生成课程标题，使用目录名
+        course_title = f"课程：{course_folder}" 
+        # --- 修改结束 ---
         
         if course_title not in current_term_courses:
             current_term_courses[course_title] = {"title": course_title, "weeks": {}}
@@ -136,6 +141,7 @@ def generate_video_index(scan_dir):
             duration = get_video_duration(full_local_path)
             
             # --- URL 构建 ---
+            # 路径现在是 term2/course_folder/filename.mp4
             b2_path = f"{term_folder}/{course_folder}/{filename}"
             final_url = f"{BASE_URL_PREFIX}{b2_path}"
 
