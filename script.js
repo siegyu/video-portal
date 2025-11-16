@@ -37,7 +37,7 @@ function getSubtitleUrl(videoUrl, langCode = 'zh') {
 }
 
 /**
- * Helper function: 切换列表/播放器视图 (已修复 Bug 2)
+ * Helper function: 切换列表/播放器视图 (已修复 Bug 3: 清除残留字幕)
  */
 function toggleView(showList) {
     if (showList) {
@@ -53,9 +53,16 @@ function toggleView(showList) {
         
         // 在列表视图中，隐藏顶部的“当前播放”标题
         headerVideoTitle.classList.add('d-none');
-
+        
         // --- BUG 2 修复：切换回列表时，立即停止视频播放 ---
         videoPlayer.pause(); 
+
+        // --- BUG 3 修复：强制清除残留字幕 ---
+        // 当切换回列表时，立即移除所有 <track> 元素。
+        // 这会强制浏览器清除屏幕上任何“卡住”的字幕渲染。
+        while (videoPlayer.firstChild) {
+            videoPlayer.removeChild(videoPlayer.firstChild);
+        }
         
     } else {
         // 切换到播放器视图
@@ -88,7 +95,7 @@ function toggleIcon(header, isExpanded) {
 /**
  * 核心函数: 加载视频到播放器 (已修复 Bug 1)
  */
-function loadVideo(videoUrl, title, clickedLink) { // clickedLink 是被点击的元素 (来自侧边栏或列表)
+function loadVideo(videoUrl, title, clickedLink) { 
     // 1. 切换到播放器视图
     toggleView(false); 
     
@@ -97,10 +104,12 @@ function loadVideo(videoUrl, title, clickedLink) { // clickedLink 是被点击�
     
     // 3. 更新视频源
     if (videoPlayer.src !== videoUrl) {
-        videoPlayer.crossOrigin = 'anonymous'; // 确保跨域字幕
+        videoPlayer.crossOrigin = 'anonymous'; 
         videoPlayer.src = videoUrl;
         
         // 4. 清理旧字幕和添加新字幕
+        // (注意: 即使 toggleView 已经清理过，这里也需要再次清理，
+        // 以确保在播放器视图内部切换视频时也能正确刷新)
         while (videoPlayer.firstChild) {
             videoPlayer.removeChild(videoPlayer.firstChild);
         }
@@ -257,7 +266,6 @@ function buildSidebarNavigation(data) {
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink);
-                        // 移除多余的 toggleView(false)
                     };
 
                     L3Content.appendChild(sectionLink);
@@ -269,7 +277,6 @@ function buildSidebarNavigation(data) {
 
 /**
  * Helper function: 自动展开当前视频所在的层级 (已修复)
- * (替换 script.js 中无效的存根函数)
  */
 function autoExpandHierarchy(linkElement) {
     if (!linkElement) return;
@@ -278,8 +285,6 @@ function autoExpandHierarchy(linkElement) {
     const L2Id = linkElement.getAttribute('data-parent-l2');
     const L3Id = linkElement.getAttribute('data-parent-l3');
 
-    // 确保 Bootstrap Collapse 实例存在
-    // (如果 Bootstrap JS 未加载或版本不兼容，这里会失败)
     if (typeof bootstrap === 'undefined' || typeof bootstrap.Collapse === 'undefined') {
         console.error('Bootstrap Collapse API 未找到。');
         return;
@@ -291,14 +296,11 @@ function autoExpandHierarchy(linkElement) {
         const collapseElement = document.getElementById(id);
         
         if (collapseElement && !collapseElement.classList.contains('show')) {
-            // 获取或创建 Bootstrap 实例
             const collapseInstance = bootstrap.Collapse.getOrCreateInstance(collapseElement, {
                 toggle: false
             });
             collapseInstance.show();
             
-            // 手动更新父级 header 的图标
-            // (因为 show.bs.collapse 事件可能在 API 调用时不同步)
             const parentHeader = document.querySelector(`[data-bs-target="#${id}"]`);
             if (parentHeader) {
                 toggleIcon(parentHeader, true);
@@ -307,8 +309,6 @@ function autoExpandHierarchy(linkElement) {
         }
     });
     
-    // 确保选中的链接滚动到可视区域
-    // (留出时间等待折叠动画完成)
     setTimeout(() => {
         linkElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 350); 
@@ -387,7 +387,6 @@ function buildListView(data) {
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink); 
-                        // 移除多余的 toggleView(false)
                     };
                     
                     sectionList.appendChild(sectionLink);
@@ -447,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // (确保 index.html 中的 <button id="toggle-list-btn"> 没有 onclick 属性)
     toggleListBtn.addEventListener('click', () => {
-        // 按钮“完整列表”的作用始终是返回列表视图
+        // 按钮“完整列表” 的作用始终是返回列表视图
         toggleView(true);
     });
     
