@@ -58,8 +58,6 @@ function toggleView(showList) {
         videoPlayer.pause(); 
 
         // --- BUG 3 修复：强制清除残留字幕 ---
-        // 当切换回列表时，立即移除所有 <track> 元素。
-        // 这会强制浏览器清除屏幕上任何“卡住”的字幕渲染。
         while (videoPlayer.firstChild) {
             videoPlayer.removeChild(videoPlayer.firstChild);
         }
@@ -93,7 +91,7 @@ function toggleIcon(header, isExpanded) {
 }
 
 /**
- * 核心函数: 加载视频到播放器 (已修复 Bug 1)
+ * 核心函数: 加载视频到播放器 (已修复 Bug 1 和残留字幕 Bug)
  */
 function loadVideo(videoUrl, title, clickedLink) { 
     // 1. 切换到播放器视图
@@ -102,39 +100,43 @@ function loadVideo(videoUrl, title, clickedLink) {
     // 2. 更新头部标题
     headerVideoTitle.textContent = title;
     
-    // 3. 更新视频源
-    if (videoPlayer.src !== videoUrl) {
+    // 3. 检查是否是新视频
+    const isNewVideo = videoPlayer.src !== videoUrl;
+
+    // --- 核心修复：强制重置播放器状态以清除残留字幕 ---
+    // 无论视频是否相同，都先暂停并清空 <track> 元素。
+    videoPlayer.pause();
+    while (videoPlayer.firstChild) {
+        videoPlayer.removeChild(videoPlayer.firstChild);
+    }
+    
+    // 仅当视频 URL 真正改变时，才重置 src
+    if (isNewVideo) {
         videoPlayer.crossOrigin = 'anonymous'; 
         videoPlayer.src = videoUrl;
-        
-        // 4. 清理旧字幕和添加新字幕
-        // (注意: 即使 toggleView 已经清理过，这里也需要再次清理，
-        // 以确保在播放器视图内部切换视频时也能正确刷新)
-        while (videoPlayer.firstChild) {
-            videoPlayer.removeChild(videoPlayer.firstChild);
-        }
-
-        const subtitleUrl = getSubtitleUrl(videoUrl);
-        if (subtitleUrl) {
-            const track = document.createElement('track');
-            track.kind = 'subtitles';
-            track.label = '中文';
-            track.srclang = 'zh';
-            track.src = subtitleUrl;
-            track.default = true; 
-            videoPlayer.appendChild(track);
-        }
-        
-        // 5. 重新加载和播放
-        videoPlayer.load();
     }
+    
+    // 4. (重新) 添加新字幕
+    const subtitleUrl = getSubtitleUrl(videoUrl);
+    if (subtitleUrl) {
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = '中文';
+        track.srclang = 'zh';
+        track.src = subtitleUrl;
+        track.default = true; 
+        videoPlayer.appendChild(track);
+    }
+    
+    // 5. 重新加载和播放
+    // 必须调用 load() 来加载新的 <track> 元素或新的 src
+    videoPlayer.load();
     videoPlayer.play();
     
     // --- BUG 1 修复：无论从哪里点击，都查找、高亮并展开侧边栏链接 ---
 
     // 6. 更新激活链接状态
     if (currentActiveLink) {
-        // currentActiveLink 始终指向侧边栏链接
         currentActiveLink.classList.remove('active');
     }
 
@@ -143,9 +145,7 @@ function loadVideo(videoUrl, title, clickedLink) {
 
     if (sidebarLink) {
         sidebarLink.classList.add('active');
-        currentActiveLink = sidebarLink; // 更新当前激活的链接为侧边栏链接
-        
-        // 关键修复：调用 autoExpandHierarchy 展开侧边栏
+        currentActiveLink = sidebarLink; 
         autoExpandHierarchy(sidebarLink); 
     } else {
         currentActiveLink = null;
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // (确保 index.html 中的 <button id="toggle-list-btn"> 没有 onclick 属性)
     toggleListBtn.addEventListener('click', () => {
-        // 按钮“完整列表” 的作用始终是返回列表视图
+        // 按钮“完整列表”的作用始终是返回列表视图
         toggleView(true);
     });
     
