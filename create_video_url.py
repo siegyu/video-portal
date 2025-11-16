@@ -7,14 +7,18 @@ import subprocess # <-- 新增导入
 # --- 配置参数 ---
 
 # Backblaze B2/Cloudflare 的 URL 前缀 (保持不变)
-# 格式为: https://videos.yourdomain.com/file/mytutorial/
 BASE_URL_PREFIX = "https://v.ehm84542025.site/"
 
-# 正则表达式用于匹配文件名中的信息 (保持不变)
-REGEX_SECTION = re.compile(r'(?P<course>[a-z]+)-w(?P<week>\d+)c(?P<section>\d+)\.mp4', re.IGNORECASE)
-REGEX_RECAP = re.compile(r'(?P<course>[a-z]+)-w(?P<week>\d+)recap\.mp4', re.IGNORECASE)
+# --- 核心修改：新的正则表达式，忽略前缀，只匹配周和小节 ---
+# 旧的: r'(?P<course>[a-z]+)-w(?P<week>\d+)c(?P<section>\d+)\.mp4'
+# 新的: 使用 .*?- 匹配并忽略所有前缀（包括含有 - 的课程名），直到 w\d+
+REGEX_SECTION = re.compile(r'.*?-w(?P<week>\d+)c(?P<section>\d+)\.mp4$', re.IGNORECASE)
 
-# --- 新增：ffprobe 功能函数 ---
+# 旧的: r'(?P<course>[a-z]+)-w(?P<week>\d+)recap\.mp4'
+# 新的: 使用 .*?- 匹配并忽略所有前缀，直到 w\d+recap
+REGEX_RECAP = re.compile(r'.*?-w(?P<week>\d+)recap\.mp4$', re.IGNORECASE)
+
+# --- 新增：ffprobe 功能函数 (保持不变) ---
 
 def get_video_duration(file_path):
     """
@@ -57,7 +61,7 @@ def get_video_duration(file_path):
         print(f"警告: 无法从 ffprobe 输出中解析时长: {duration_str}")
         return 0
 
-# --- 核心函数 (已修改：移除 'final' 目录限制) ---
+# --- 核心函数 (已修改：移除对 'final' 目录的限制，并移除对 course 分组的依赖) ---
 
 def generate_video_index(scan_dir):
     """
@@ -91,15 +95,8 @@ def generate_video_index(scan_dir):
             
         course_folder = path_components[0]
         
-        # --- 修改开始：移除对 'final' 目录的硬性限制 ---
-        # 之前的代码是:
-        # if course_folder != 'final':
-        #     print(f"警告：跳过非 'final' 课程目录: {course_folder}")
-        #     continue
-            
-        # 动态生成课程标题，使用目录名
+        # 动态生成课程标题，使用目录名 (例如 'tex-bui' -> '课程：tex-bui')
         course_title = f"课程：{course_folder}" 
-        # --- 修改结束 ---
         
         if course_title not in current_term_courses:
             current_term_courses[course_title] = {"title": course_title, "weeks": {}}
@@ -111,12 +108,14 @@ def generate_video_index(scan_dir):
             if not filename.lower().endswith('.mp4'):
                 continue
             
+            # 使用新的正则表达式进行匹配
             match_section = REGEX_SECTION.match(filename)
             match_recap = REGEX_RECAP.match(filename)
             
             # --- L3/L4 信息提取 ---
             if match_section:
                 groups = match_section.groupdict()
+                # groups中不再有 'course' 键，直接提取 week 和 section
                 week_num = int(groups['week'])
                 section_num = int(groups['section'])
                 
@@ -125,6 +124,7 @@ def generate_video_index(scan_dir):
                 
             elif match_recap:
                 groups = match_recap.groupdict()
+                # groups中不再有 'course' 键，直接提取 week
                 week_num = int(groups['week'])
                 
                 week_title = f"第{week_num}周" # L3
@@ -141,7 +141,7 @@ def generate_video_index(scan_dir):
             duration = get_video_duration(full_local_path)
             
             # --- URL 构建 ---
-            # 路径现在是 term2/course_folder/filename.mp4
+            # 路径: term2/tex-bui/tex-bui-w4c0.mp4
             b2_path = f"{term_folder}/{course_folder}/{filename}"
             final_url = f"{BASE_URL_PREFIX}{b2_path}"
 
