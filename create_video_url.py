@@ -7,7 +7,7 @@ import subprocess # <-- 新增导入
 # --- 配置参数 ---
 
 # Backblaze B2/Cloudflare 的 URL 前缀 (保持不变)
-BASE_URL_PREFIX = "https://v.ehm84542025.site/"
+BASE_URL_PREFIX = "https://v.ehm84542025.site/term2/"
 
 # --- 核心修改：新的正则表达式，忽略前缀，只匹配周和小节 ---
 # 旧的: r'(?P<course>[a-z]+)-w(?P<week>\d+)c(?P<section>\d+)\.mp4'
