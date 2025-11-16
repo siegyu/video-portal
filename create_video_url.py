@@ -41,27 +41,14 @@ def get_video_duration(file_path):
         
         # 运行命令并捕获输出
         result = subprocess.run(cmd, capture_output=True, text=True, check=True, encoding='utf-8')
-        duration_str = result.stdout.strip()
-        
-        # 尝试将结果转换为浮点数（秒）并四舍五入
-        duration = float(duration_str)
-        return round(duration) # 精确到秒后取整
-        
-    except FileNotFoundError:
-        print("\n*** 致命错误: 'ffprobe' 未找到。***")
-        print("请确保 FFmpeg 套件已安装并添加到了系统的 PATH 环境变量中。")
-        print("您可以从 https://ffmpeg.org/download.html 下载。")
-        sys.exit(1) # 缺少 ffprobe 是致命错误，终止脚本
-    except subprocess.CalledProcessError as e:
-        # 如果 ffprobe 无法处理该文件（例如文件损坏）
-        print(f"警告: 无法处理文件 {file_path}。ffprobe 错误: {e.stderr.strip()}")
-        return 0
-    except ValueError:
-        # 结果无法转换为数字
-        print(f"警告: 无法从 ffprobe 输出中解析时长: {duration_str}")
+        duration = float(result.stdout.strip())
+        return int(round(duration))
+    except (subprocess.CalledProcessError, ValueError, FileNotFoundError) as e:
+        print(f"警告：无法使用 ffprobe 获取 {file_path} 的时长。错误: {e}")
         return 0
 
-# --- 核心函数 (已修改：移除对 'final' 目录的限制，并移除对 course 分组的依赖) ---
+
+# --- 核心函数 ---
 
 def generate_video_index(scan_dir):
     """
@@ -71,100 +58,117 @@ def generate_video_index(scan_dir):
     """
     
     # --- L1 结构定义 ---
+    # L1 文件夹名 (e.g., 'term2')
     term_folder = os.path.basename(scan_dir.rstrip(os.sep))
-    term_title = "第2学期" 
+    # L1 结构标题 (根据需求硬编码)
+    term_title = "第2学期" # 假设输入 Z:\term2
     
+    # 结构构建字典
     data_by_path = {}
     
-    if term_title not in data_by_path:
-        data_by_path[term_title] = {"title": term_title, "courses": {}}
+    # 遍历目录
+    for root, _, files in os.walk(scan_dir):
+        # 计算相对路径，用于生成 URL
+        relative_path = os.path.relpath(root, scan_dir).replace('\\', '/')
+        
+        # 确保根目录自身被处理
+        if relative_path == '.':
+            relative_path = os.path.basename(scan_dir.rstrip(os.sep))
+        
+        # --- L1: Term / 学期 ---
+        term_key = os.path.join(scan_dir, term_folder)
+        if term_key not in data_by_path:
+            data_by_path[term_key] = {
+                "title": term_title,
+                "courses": {} # 键为 course_key (e.g., 'term2/courseA')
+            }
 
-    current_term_courses = data_by_path[term_title]["courses"]
-    
-    # 遍历指定目录
-    for dirpath, dirnames, filenames in os.walk(scan_dir):
+        # --- L2: Course / 课程 ---
+        # 课程名称通常是 term 文件夹下的第一级子目录名 (e.g., 'final')
+        path_parts = relative_path.split('/')
+        course_name = path_parts[0] if path_parts and path_parts[0] else 'default'
         
-        path_components = os.path.relpath(dirpath, scan_dir).split(os.sep)
+        course_key = os.path.join(term_folder, course_name)
         
-        if path_components == ['.']:
-            continue
-            
-        # 仅处理根目录下的第一级子目录作为课程目录
-        if len(path_components) != 1:
-            continue
-            
-        course_folder = path_components[0]
+        if course_key not in data_by_path[term_key]['courses']:
+            data_by_path[term_key]['courses'][course_key] = {
+                "title": f"课程：{course_name}",
+                "weeks": {} # 键为 week_number (e.g., '7')
+            }
         
-        # 动态生成课程标题，使用目录名 (例如 'tex-bui' -> '课程：tex-bui')
-        course_title = f"课程：{course_folder}" 
+        course_data = data_by_path[term_key]['courses'][course_key]
         
-        if course_title not in current_term_courses:
-            current_term_courses[course_title] = {"title": course_title, "weeks": {}}
-
-        current_weeks = current_term_courses[course_title]["weeks"]
-
-        # 处理当前目录下的所有文件
-        for filename in filenames:
-            if not filename.lower().endswith('.mp4'):
+        for filename in files:
+            if not filename.endswith('.mp4'):
                 continue
             
-            # 使用新的正则表达式进行匹配
-            match_section = REGEX_SECTION.match(filename)
-            match_recap = REGEX_RECAP.match(filename)
+            full_path = os.path.join(root, filename)
+            url_path = os.path.join(relative_path, filename).replace('\\', '/')
+            final_url = BASE_URL_PREFIX + url_path
             
-            # --- L3/L4 信息提取 ---
-            if match_section:
-                groups = match_section.groupdict()
-                # groups中不再有 'course' 键，直接提取 week 和 section
-                week_num = int(groups['week'])
-                section_num = int(groups['section'])
-                
-                week_title = f"第{week_num}周" # L3
-                section_title = f"第{section_num}小节" # L4
-                
-            elif match_recap:
-                groups = match_recap.groupdict()
-                # groups中不再有 'course' 键，直接提取 week
-                week_num = int(groups['week'])
-                
-                week_title = f"第{week_num}周" # L3
-                section_title = "回顾总结" # L4 (特殊情况)
-                
-            else:
-                print(f"警告：跳过无法解析的文件名: {filename}")
-                continue
-
-            # --- 新增：获取视频时长 ---
-            # 构造文件的完整本地路径
-            full_local_path = os.path.join(dirpath, filename)
-            # 调用 ffprobe 获取时长
-            duration = get_video_duration(full_local_path)
+            section_match = REGEX_SECTION.match(filename)
+            recap_match = REGEX_RECAP.match(filename)
             
-            # --- URL 构建 ---
-            # 路径: term2/tex-bui/tex-bui-w4c0.mp4
-            b2_path = f"{term_folder}/{course_folder}/{filename}"
-            final_url = f"{BASE_URL_PREFIX}{b2_path}"
-
-            # --- 插入数据 (新增 duration 属性) ---
-            if week_num not in current_weeks:
-                current_weeks[week_num] = {"title": week_title, "sections": []}
+            week_number = None
+            section_title = None
             
-            current_weeks[week_num]["sections"].append({
-                "title": section_title,
-                "url": final_url,
-                "duration": duration  # <-- 已添加时长属性
-            })
+            if section_match:
+                week_number = int(section_match.group('week'))
+                section_number = int(section_match.group('section'))
+                section_title = f"第{section_number}小节"
+                
+            elif recap_match:
+                week_number = int(recap_match.group('week'))
+                section_title = "回顾总结"
+                
+            if week_number is not None:
+                week_key = str(week_number)
+                
+                if week_key not in course_data['weeks']:
+                    course_data['weeks'][week_key] = {
+                        "title": f"第{week_number}周",
+                        "sections": []
+                    }
+                
+                # 获取时长
+                duration_sec = get_video_duration(full_path)
+                
+                course_data['weeks'][week_key]['sections'].append({
+                    "title": section_title,
+                    "url": final_url,
+                    "duration": duration_sec
+                })
     
-    # --- 整理输出格式 (保持不变) ---
+    # --- 整理输出格式 (修改为同时排序 weeks 和 sections) ---
     final_output_list = []
     
     for term_key, term_data in data_by_path.items():
         term_data['courses'] = list(term_data['courses'].values())
         
         for course_data in term_data['courses']:
-            sorted_weeks = sorted(course_data['weeks'].items())
-            course_data['weeks'] = [item[1] for item in sorted_weeks]
+            # 1. 确保 weeks 按数字顺序排列
+            sorted_weeks = sorted(course_data['weeks'].items(), key=lambda item: int(item[0])) # 确保按周数字排序
+            course_data['weeks'] = []
             
+            for week_index, week_data in sorted_weeks:
+                
+                # 2. 针对每个 week 的 sections 进行排序 (核心修复)
+                def sort_sections(section):
+                    title = section['title']
+                    if '回顾总结' in title:
+                        # '回顾总结' 始终排在最后（使用一个非常大的数字作为键）
+                        return 9999
+                    # 尝试从标题中提取小节号 (例如 "第X小节")
+                    match = re.search(r'第(\d+)小节', title)
+                    if match:
+                        return int(match.group(1))
+                    # 无法识别的按字母顺序
+                    return title
+                
+                # 对 sections 列表进行排序
+                week_data['sections'].sort(key=sort_sections)
+                course_data['weeks'].append(week_data)
+                
         final_output_list.append(term_data)
         
     return final_output_list
@@ -174,7 +178,7 @@ def generate_video_index(scan_dir):
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("错误：请指定要扫描的起始目录。")
-        print("用法示例：python script_name.py Z:\\term2")
+        print("用法示例：python create_video_url.py Z:\\term2")
         sys.exit(1)
         
     input_dir = sys.argv[1]
@@ -192,14 +196,8 @@ if __name__ == '__main__':
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(video_data, f, ensure_ascii=False, indent=4)
         
-        # 查找一个示例时长用于验证
-        try:
-            sample_duration = video_data[0]['courses'][0]['weeks'][0]['sections'][0]['duration']
-            print(f"JSON 索引文件已成功生成: {output_file} (包含时长信息)")
-            print(f"示例时长: {sample_duration} 秒")
-        except (IndexError, KeyError):
-            print(f"JSON 索引文件已生成: {output_file} (但未找到示例时长)")
+        print(f"成功创建视频索引文件: {output_file}")
         
     except Exception as e:
-        print(f"处理过程中发生错误: {e}")
+        print(f"发生致命错误: {e}")
         sys.exit(1)
