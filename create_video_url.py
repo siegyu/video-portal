@@ -7,7 +7,7 @@ import subprocess
 # --- 配置参数 ---
 
 # Backblaze B2/Cloudflare 的 URL 前缀 (保持不变)
-BASE_URL_PREFIX = "https://v.ehm84542025.site/" # 请根据您的实际配置修改
+BASE_URL_PREFIX = "https://v.ehm84542025.site/term2/" # 请根据您的实际配置修改
 
 # 正则表达式用于匹配文件名中的信息
 REGEX_SECTION = re.compile(r'.*?-w(?P<week>\d+)c(?P<section>\d+)\.mp4$', re.IGNORECASE)
