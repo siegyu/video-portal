@@ -31,33 +31,48 @@ function formatDuration(seconds) {
  * Helper function: 根据视频 URL 推导字幕 URL (更新为 VTT 格式)
  */
 function getSubtitleUrl(videoUrl, langCode = 'zh') {
-    // 假设视频 URL 类似于 https://videos.domain/path/filename.mp4
-    // 字幕 URL 类似于 https://videos.domain/path/filename.zh.vtt
     if (!videoUrl) return null;
-    
-    // 移除文件扩展名 (.mp4)
     const baseName = videoUrl.substring(0, videoUrl.lastIndexOf('.'));
-    // 构造 VTT 字幕 URL
     return `${baseName}.${langCode}.vtt`;
 }
 
 /**
- * Helper function: 切换列表/播放器视图
+ * Helper function: 切换列表/播放器视图 (已修复BUG)
+ * * 错误原因：index.html 使用 d-none/d-block !important 类。
+ * 旧的 toggleView 使用 style.display，优先级不够，无法覆盖 !important。
+ * 解决方案：使用 classList.remove/add 来切换 Bootstrap 类。
  */
 function toggleView(showList) {
     if (showList) {
         // 切换到列表视图
-        listView.style.display = 'flex';
-        playerView.style.display = 'none';
-        headerVideoTitle.textContent = '所有课程目录';
-        toggleListBtn.textContent = '播放器';
+        listView.classList.remove('d-none');
+        listView.classList.add('d-block');
+        
+        playerView.classList.remove('d-flex'); // player-view 使用 d-flex (来自 styles.css)
+        playerView.classList.add('d-none');
+
+        // 在列表视图中，隐藏“完整列表”按钮
+        toggleListBtn.classList.add('d-none');
+        
+        // 在列表视图中，隐藏顶部的“当前播放”标题
+        headerVideoTitle.classList.add('d-none');
+        
     } else {
         // 切换到播放器视图
-        listView.style.display = 'none';
-        playerView.style.display = 'flex';
-        toggleListBtn.textContent = '课程目录';
+        listView.classList.remove('d-block');
+        listView.classList.add('d-none');
+        
+        playerView.classList.remove('d-none');
+        playerView.classList.add('d-flex'); // player-view 布局在 styles.css 中定义为 flex
+
+        // 在播放器视图中，显示“完整列表”按钮
+        toggleListBtn.classList.remove('d-none');
+        
+        // 在播放器视图中，显示顶部的“当前播放”标题 (loadVideo会填充内容)
+        headerVideoTitle.classList.remove('d-none');
     }
 }
+
 
 /**
  * Helper function: 切换折叠图标
@@ -75,13 +90,15 @@ function toggleIcon(header, isExpanded) {
  */
 function loadVideo(videoUrl, title, clickedLink) {
     // 1. 切换到播放器视图 (确保这是第一步)
-    toggleView(false); 
+    toggleView(false); // <--- 此函数现在可以正常工作
     
     // 2. 更新头部标题
     headerVideoTitle.textContent = title;
     
     // 3. 更新视频源
     if (videoPlayer.src !== videoUrl) {
+        // 必须设置 crossorigin="anonymous" 以便跨域加载 VTT 字幕
+        videoPlayer.crossOrigin = 'anonymous'; 
         videoPlayer.src = videoUrl;
         
         // 4. 清理旧字幕和添加新字幕
@@ -219,8 +236,7 @@ function buildSidebarNavigation(data) {
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink);
-                        // BUG 修复：显式调用，确保视图切换
-                        toggleView(false); 
+                        // 移除多余的 toggleView(false) 调用，因为 loadVideo 内部会处理
                     };
 
                     L3Content.appendChild(sectionLink);
@@ -311,8 +327,7 @@ function buildListView(data) {
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink); // 传递链接以便更新 active 状态
-                        // BUG 修复：显式调用，确保视图切换
-                        toggleView(false); 
+                        // 移除多余的 toggleView(false) 调用，因为 loadVideo 内部会处理
                     };
                     
                     sectionList.appendChild(sectionLink);
@@ -362,18 +377,18 @@ document.addEventListener('DOMContentLoaded', () => {
             courseCatalogContainer.innerHTML = `<p class="p-3 text-danger">错误：无法加载视频目录数据。请检查 'videos_index.json' 文件和网络连接。 (${error.message})</p>`;
         });
 
-    // 3. 切换视图按钮事件
+    // 3. 切换视图按钮事件 (修复: 确保 onclick 事件在 HTML 之外定义)
+    
+    // 从 index.html 移除 onclick="toggleView('list')"
+    // 我们在这里绑定正确的事件
+    document.getElementById('home-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleView(true);
+    });
+
     toggleListBtn.addEventListener('click', () => {
-        // 判断当前显示的是否是播放器
-        const isPlayerVisible = playerView.style.display !== 'none';
-        
-        if (isPlayerVisible) {
-            // 从播放器视图切换回列表视图
-            toggleView(true);
-        } else if (currentActiveLink) {
-            // 从列表视图切换回播放器视图 (如果之前有激活的视频)
-            toggleView(false);
-        }
+        // 按钮“完整列表” 的作用始终是返回列表视图
+        toggleView(true);
     });
     
     // 4. 初始化视图
