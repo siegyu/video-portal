@@ -37,10 +37,7 @@ function getSubtitleUrl(videoUrl, langCode = 'zh') {
 }
 
 /**
- * Helper function: 切换列表/播放器视图 (已修复BUG)
- * * 错误原因：index.html 使用 d-none/d-block !important 类。
- * 旧的 toggleView 使用 style.display，优先级不够，无法覆盖 !important。
- * 解决方案：使用 classList.remove/add 来切换 Bootstrap 类。
+ * Helper function: 切换列表/播放器视图 (已修复 Bug 2)
  */
 function toggleView(showList) {
     if (showList) {
@@ -48,7 +45,7 @@ function toggleView(showList) {
         listView.classList.remove('d-none');
         listView.classList.add('d-block');
         
-        playerView.classList.remove('d-flex'); // player-view 使用 d-flex (来自 styles.css)
+        playerView.classList.remove('d-flex');
         playerView.classList.add('d-none');
 
         // 在列表视图中，隐藏“完整列表”按钮
@@ -56,6 +53,9 @@ function toggleView(showList) {
         
         // 在列表视图中，隐藏顶部的“当前播放”标题
         headerVideoTitle.classList.add('d-none');
+
+        // --- BUG 2 修复：切换回列表时，立即停止视频播放 ---
+        videoPlayer.pause(); 
         
     } else {
         // 切换到播放器视图
@@ -63,12 +63,12 @@ function toggleView(showList) {
         listView.classList.add('d-none');
         
         playerView.classList.remove('d-none');
-        playerView.classList.add('d-flex'); // player-view 布局在 styles.css 中定义为 flex
+        playerView.classList.add('d-flex'); 
 
         // 在播放器视图中，显示“完整列表”按钮
         toggleListBtn.classList.remove('d-none');
         
-        // 在播放器视图中，显示顶部的“当前播放”标题 (loadVideo会填充内容)
+        // 在播放器视图中，显示顶部的“当前播放”标题
         headerVideoTitle.classList.remove('d-none');
     }
 }
@@ -86,19 +86,18 @@ function toggleIcon(header, isExpanded) {
 }
 
 /**
- * 核心函数: 加载视频到播放器
+ * 核心函数: 加载视频到播放器 (已修复 Bug 1)
  */
-function loadVideo(videoUrl, title, clickedLink) {
-    // 1. 切换到播放器视图 (确保这是第一步)
-    toggleView(false); // <--- 此函数现在可以正常工作
+function loadVideo(videoUrl, title, clickedLink) { // clickedLink 是被点击的元素 (来自侧边栏或列表)
+    // 1. 切换到播放器视图
+    toggleView(false); 
     
     // 2. 更新头部标题
     headerVideoTitle.textContent = title;
     
     // 3. 更新视频源
     if (videoPlayer.src !== videoUrl) {
-        // 必须设置 crossorigin="anonymous" 以便跨域加载 VTT 字幕
-        videoPlayer.crossOrigin = 'anonymous'; 
+        videoPlayer.crossOrigin = 'anonymous'; // 确保跨域字幕
         videoPlayer.src = videoUrl;
         
         // 4. 清理旧字幕和添加新字幕
@@ -113,7 +112,7 @@ function loadVideo(videoUrl, title, clickedLink) {
             track.label = '中文';
             track.srclang = 'zh';
             track.src = subtitleUrl;
-            track.default = true; // 默认启用字幕
+            track.default = true; 
             videoPlayer.appendChild(track);
         }
         
@@ -122,14 +121,31 @@ function loadVideo(videoUrl, title, clickedLink) {
     }
     videoPlayer.play();
     
+    // --- BUG 1 修复：无论从哪里点击，都查找、高亮并展开侧边栏链接 ---
+
     // 6. 更新激活链接状态
     if (currentActiveLink) {
+        // currentActiveLink 始终指向侧边栏链接
         currentActiveLink.classList.remove('active');
     }
-    // L4 链接在侧边栏和列表视图中使用不同的类名，兼容处理
-    if (clickedLink) {
-        clickedLink.classList.add('active');
-        currentActiveLink = clickedLink;
+
+    // 查找左侧导航栏中的对应链接
+    const sidebarLink = document.querySelector(`.section-link-sidebar[data-url="${videoUrl}"]`);
+
+    if (sidebarLink) {
+        sidebarLink.classList.add('active');
+        currentActiveLink = sidebarLink; // 更新当前激活的链接为侧边栏链接
+        
+        // 关键修复：调用 autoExpandHierarchy 展开侧边栏
+        autoExpandHierarchy(sidebarLink); 
+    } else {
+        currentActiveLink = null;
+    }
+    
+    // 额外处理: 保持 list-view 中的链接（如果存在）高亮
+    document.querySelectorAll('.section-link.active').forEach(link => link.classList.remove('active'));
+    if (clickedLink && clickedLink.classList.contains('section-link')) {
+         clickedLink.classList.add('active');
     }
 }
 
@@ -145,14 +161,13 @@ function createCollapsibleHeader(title, targetId, className, paddingLeft) {
     header.setAttribute('aria-controls', targetId);
     header.style.paddingLeft = `${paddingLeft}px`; 
     
-    // 使用 span 包裹标题文本
     const titleSpan = document.createElement('span');
     titleSpan.textContent = title;
     header.appendChild(titleSpan);
 
     const icon = document.createElement('span');
     icon.className = 'collapse-icon bi bi-chevron-right'; 
-    icon.innerHTML = '▶'; // 使用简单的箭头字符
+    icon.innerHTML = '▶'; 
     header.appendChild(icon);
     
     return header;
@@ -229,14 +244,20 @@ function buildSidebarNavigation(data) {
 
                     // --- L4 (小节链接 - 侧边栏) ---
                     const sectionLink = document.createElement('a');
-                    sectionLink.className = 'section-link-sidebar'; // 使用侧边栏专用类
+                    sectionLink.className = 'section-link-sidebar'; 
                     sectionLink.href = '#'; 
                     sectionLink.innerHTML = `${section.title} <span class="duration-display">${durationText}</span>`; 
+                    
+                    // --- 关键：为 autoExpandHierarchy 存储父级 ID ---
+                    sectionLink.setAttribute('data-url', section.url); 
+                    sectionLink.setAttribute('data-parent-l1', L1ContentId);
+                    sectionLink.setAttribute('data-parent-l2', L2ContentId);
+                    sectionLink.setAttribute('data-parent-l3', L3ContentId);
                     
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
                         loadVideo(section.url, fullTitle, sectionLink);
-                        // 移除多余的 toggleView(false) 调用，因为 loadVideo 内部会处理
+                        // 移除多余的 toggleView(false)
                     };
 
                     L3Content.appendChild(sectionLink);
@@ -247,13 +268,52 @@ function buildSidebarNavigation(data) {
 }
 
 /**
- * Helper function: 自动展开当前视频所在的层级 (暂略)
+ * Helper function: 自动展开当前视频所在的层级 (已修复)
+ * (替换 script.js 中无效的存根函数)
  */
-function autoExpandHierarchy(url, data) {
-    if (!url || !data) return;
+function autoExpandHierarchy(linkElement) {
+    if (!linkElement) return;
 
-    // 略过细节实现
+    const L1Id = linkElement.getAttribute('data-parent-l1');
+    const L2Id = linkElement.getAttribute('data-parent-l2');
+    const L3Id = linkElement.getAttribute('data-parent-l3');
+
+    // 确保 Bootstrap Collapse 实例存在
+    // (如果 Bootstrap JS 未加载或版本不兼容，这里会失败)
+    if (typeof bootstrap === 'undefined' || typeof bootstrap.Collapse === 'undefined') {
+        console.error('Bootstrap Collapse API 未找到。');
+        return;
+    }
+
+    // 展开 L1, L2, L3
+    [L1Id, L2Id, L3Id].forEach(id => {
+        if (!id) return;
+        const collapseElement = document.getElementById(id);
+        
+        if (collapseElement && !collapseElement.classList.contains('show')) {
+            // 获取或创建 Bootstrap 实例
+            const collapseInstance = bootstrap.Collapse.getOrCreateInstance(collapseElement, {
+                toggle: false
+            });
+            collapseInstance.show();
+            
+            // 手动更新父级 header 的图标
+            // (因为 show.bs.collapse 事件可能在 API 调用时不同步)
+            const parentHeader = document.querySelector(`[data-bs-target="#${id}"]`);
+            if (parentHeader) {
+                toggleIcon(parentHeader, true);
+                parentHeader.setAttribute('aria-expanded', 'true');
+            }
+        }
+    });
+    
+    // 确保选中的链接滚动到可视区域
+    // (留出时间等待折叠动画完成)
+    setTimeout(() => {
+        linkElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 350); 
 }
+
 
 /**
  * 5. 构建右侧课程目录视图 (初始页 - ListView)
@@ -326,8 +386,8 @@ function buildListView(data) {
                     
                     sectionLink.onclick = (e) => {
                         e.preventDefault(); 
-                        loadVideo(section.url, fullTitle, sectionLink); // 传递链接以便更新 active 状态
-                        // 移除多余的 toggleView(false) 调用，因为 loadVideo 内部会处理
+                        loadVideo(section.url, fullTitle, sectionLink); 
+                        // 移除多余的 toggleView(false)
                     };
                     
                     sectionList.appendChild(sectionLink);
@@ -379,15 +439,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. 切换视图按钮事件 (修复: 确保 onclick 事件在 HTML 之外定义)
     
-    // 从 index.html 移除 onclick="toggleView('list')"
-    // 我们在这里绑定正确的事件
+    // (确保 index.html 中的 <a id="home-link"> 没有 onclick 属性)
     document.getElementById('home-link').addEventListener('click', (e) => {
         e.preventDefault();
         toggleView(true);
     });
-
+    
+    // (确保 index.html 中的 <button id="toggle-list-btn"> 没有 onclick 属性)
     toggleListBtn.addEventListener('click', () => {
-        // 按钮“完整列表” 的作用始终是返回列表视图
+        // 按钮“完整列表”的作用始终是返回列表视图
         toggleView(true);
     });
     
