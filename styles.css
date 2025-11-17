@@ -180,11 +180,11 @@ html, body {
 /* ---------------------------------------------------- */
 .week-title {
     /* 保持纵向排列，使用 h6 默认的 block 行为 */
-    color: #86e7ff; /* 突出周标题 */
+    color: #91cbda; /* 突出周标题 */
     font-weight: bold;
     margin-bottom: 10px; /* 标题与小节区块的间距 */
     padding-bottom: 8px; 
-    border-bottom: 4px solid #333333; /* 增加分隔线 */
+    border-bottom: 2px solid #2c2c2c; /* 增加分隔线 */
 }
 
 /* 3. 小节列表容器 (L4 - 紧凑尾随式排列) */
