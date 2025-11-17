@@ -1,242 +1,339 @@
-/* ===== 全局重置与基础设置 ===== */
-* {
+/* ---------------------------------------------------- */
+/* 全局暗色调和基本布局 (保持不变) */
+/* ---------------------------------------------------- */
+html, body {
+    height: 100%;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-  }
-  
-  :root {
-    --bg-primary: #0f0f0f;
-    --bg-secondary: #1a1a1a;
-    --bg-tertiary: #252525;
-    --text-primary: #f0f0f0;
-    --text-secondary: #b0b0b0;
-    --accent: #4dabf7; /* 柔和蓝色，用于高亮/焦点 */
-    --border: #333;
-    --card-radius: 12px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-  }
-  
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    line-height: 1.6;
-    padding: 0;
-    margin: 0;
-  }
-  
-  /* ===== 通用组件 ===== */
-  .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: var(--spacing-md);
-    display: flex;
-    gap: var(--spacing-lg);
-  }
-  
-  /* ===== 顶部标题区 ===== */
-  .header {
-    text-align: center;
-    padding: var(--spacing-md) 0;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .header h1 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .header p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-  }
-  
-  /* ===== 左侧导航栏 ===== */
-  .sidebar {
-    width: 280px;
-    background: var(--bg-secondary);
-    border-radius: var(--card-radius);
-    padding: var(--spacing-md);
-    height: fit-content;
-    max-height: 85vh;
+    background-color: #121212; 
+    color: #E0E0E0; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ---------------------------------------------------- */
+/* 整体布局容器 (Sidebar + Main Content) */
+/* ---------------------------------------------------- */
+.h-remaining-viewport {
+    height: calc(100vh - 48px); 
+    /* NEW: 启用 Flexbox 布局以容纳侧边栏和主内容 */
+    display: flex; 
+    /* 移除顶层容器的隐藏，让内部的 #main-content 滚动 */
+    overflow: hidden; 
+}
+
+#sidebar {
+    width: 280px; 
+    overflow-y: auto; 
+    height: 100%; 
+    background-color: #1E1E1E !important; 
+    font-size: 0.85rem; 
+    flex-shrink: 0; /* 确保侧边栏不收缩 */
+}
+
+/* ---------------------------------------------------- */
+/* 主内容区 (Main Content) - Fix for Scrolling */
+/* ---------------------------------------------------- */
+#main-content {
+    flex-grow: 1; 
+    /* !!! 核心修复 !!! */
+    /* 允许主内容区域在内容溢出时垂直滚动 */
     overflow-y: auto;
-    position: sticky;
-    top: var(--spacing-md);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-  
-  .sidebar h2 {
-    font-size: 1.1rem;
-    margin-bottom: var(--spacing-md);
-    color: var(--text-primary);
-    font-weight: 600;
-  }
-  
-  .nav-section {
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .nav-section h3 {
-    font-size: 1rem;
-    color: var(--accent);
-    margin: var(--spacing-sm) 0 var(--spacing-sm);
-    font-weight: 500;
-  }
-  
-  .nav-list {
-    list-style: none;
-  }
-  
-  .nav-list li {
-    margin-bottom: 4px;
-  }
-  
-  .nav-list a {
-    display: block;
-    padding: 8px 12px;
-    color: var(--text-secondary);
+    /* 统一内边距，对应 index.html 中的 p-4 */
+    padding: 1.5rem; 
+    background-color: #121212;
+}
+
+
+/* ---------------------------------------------------- */
+/* 左侧导航栏样式 (Sidebar) - 增强层次感和缩进 */
+/* ---------------------------------------------------- */
+
+/* L1, L2, L3 标题通用样式：Flexbox 布局，增加上下内边距 */
+.sidebar-l1-header, .sidebar-l2-header, .sidebar-l3-header {
+    display: flex !important; 
+    justify-content: space-between; 
+    align-items: center;
+    border: none !important;
+    cursor: pointer;
     text-decoration: none;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s;
+    user-select: none;
+    /* 新增：增大上下内边距，增加行距 */
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+/* L1: 学期 - 突出显示，最少缩进 */
+.sidebar-l1-header {
+    background-color: #282828 !important; 
+    color: #86e7ff !important; /* 主题色蓝 */
+    padding-left: 10px !important; 
+    margin-top: 8px; /* 增加 L1 之间的垂直间距 */
+    font-weight: bold;
     font-size: 0.95rem;
-  }
-  
-  .nav-list a:hover,
-  .nav-list a.active {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-  }
-  
-  .nav-list a.active {
-    border-left: 3px solid var(--accent);
-    padding-left: 9px;
-  }
-  
-  /* ===== 主内容区 ===== */
-  .main-content {
-    flex: 1;
+}
+.sidebar-l1-header:hover {
+    background-color: #555555 !important;
+}
+
+/* L2: 课程 - 字体略小，增加缩进 */
+.sidebar-l2-header {
+    background-color: #1E1E1E !important; 
+    color: #C0C0C0 !important; /* 浅灰色 */
+    padding-left: 25px !important; /* 缩进 15px */
+    font-weight: 500;
+    font-size: 0.9rem;
+
+}
+.sidebar-l2-header:hover {
+    background-color: #3b3b3b !important;
+}
+
+/* L3: 周 - 字体更小，更多缩进，暗淡颜色 */
+.sidebar-l3-header {
+    background-color: #1E1E1E !important; 
+    color: #a9a9a9 !important; /* 暗淡文本 */
+    padding-left: 40px !important; /* 缩进 30px */
+    font-size: 0.85rem;
+}
+.sidebar-l3-header:hover {
+    background-color: #3b3b3b !important;
+}
+
+/* L4: 小节链接 - 最终层级，实现高亮和悬停反馈 */
+/* ---------------------------------------------------- */
+/* L4: 小节链接 (父容器) */
+/* ---------------------------------------------------- */
+/* * 必须将 L4 链接设置为 position: relative，
+ * 这样才能让内部的时长 span 相对于它进行绝对定位。
+ */
+ .section-link-sidebar {
+    position: relative; /* 允许内部元素绝对定位 */
+    background-color: #1E1E1E !important; 
+    color: #E0E0E0 !important;
+    padding: 6px 10px !important; 
+    padding-left: 55px !important; 
+    border: none !important;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    display: block;
+    font-size: 0.85rem;
+    overflow: hidden; /* 确保内容不溢出 */
+}
+
+/* ---------------------------------------------------- */
+/* NEW: 时长显示样式 (实现您需要的效果) */
+/* ---------------------------------------------------- */
+/* * 这段 CSS 将会把时长 (.duration-display) 从标题流中抽离，
+ * 并将其“钉”在父容器的右侧中间。
+ */
+.duration-display {
+    font-size: 0.85rem; 
+    color: #c7c2b0; 
+    font-weight: normal;
+    margin-left: 5px;
+    
+    /* 核心：实现靠右、居中、独立布局 */
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.section-link-sidebar:hover {
+    background-color: #333333 !important; /* 悬停颜色 */
+    color: #E0E0E0 !important;
+}
+
+/* 正在播放 (Active) 的小节 */
+.section-link-sidebar.active {
+    background-color: #66af4c !important; /* 突出绿色背景 */
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+/* 折叠/展开图标样式 */
+.collapse-icon {
+    font-size: 0.8em;
+    transition: transform 0.2s;
+    flex-shrink: 0; 
+    margin-right: 10px; /* 确保图标距离右侧边界有固定间距 */
+    color: #8f8f8f; /* 图标颜色 */
+}
+
+/* L2/L3 content container (用于确保L4 link的hover效果不会被上级背景色干扰) */
+.collapse {
+    background-color: #1E1E1E;
+}
+
+
+/* ---------------------------------------------------- */
+/* L7: 课程目录 (ListView) 样式优化 */
+/* ---------------------------------------------------- */
+
+/* 1. 课程内容容器（确保内容不被顶部 Tab 遮挡）*/
+.course-catalog-content {
+    padding-top: 15px; /* 增加与课程 Tab 的间距 */
+}
+
+/* 2. 周标题样式 (L3 - 纵向排列) */
+/* ---------------------------------------------------- */
+.week-title {
+    /* 保持纵向排列，使用 h6 默认的 block 行为 */
+    color: #91cbda; /* 突出周标题 */
+    font-weight: bold;
+    margin-bottom: 10px; /* 标题与小节区块的间距 */
+    padding-bottom: 8px; 
+    border-bottom: 2px solid #2c2c2c; /* 增加分隔线 */
+}
+
+/* 3. 小节列表容器 (L4 - 紧凑尾随式排列) */
+/* ---------------------------------------------------- */
+.section-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    /* 核心: 使用 Flexbox 实现紧凑的尾随式排列和自然换行 */
+    display: flex;
+    flex-wrap: wrap; /* 允许换行 */
+    gap: 12px; /* 小节区块之间的间距 */
+    /* 确保 section-list 本身有底部边距 */
+    margin-bottom: 24px; 
+}
+
+/* 4. 小节区块 (L4 - 区块化、带框线、固定结构) */
+/* ---------------------------------------------------- */
+.section-link {
+    /* 使用内联块确保区块能在 Flex 容器中尾随排列 */
+    display: flex; 
+    align-items: center;
+    background-color: #282828; 
+    color: #E0E0E0;
+    text-decoration: none;
+    padding: 10px 12px; /* 增加左右内边距 */
+    border: 1px solid #444444; /* 边框线 */
+    border-radius: 4px; /* 轻微圆角 */
+    font-size: 0.9rem;
+    line-height: 1.2; /* 调整行高 */
+    transition: background-color 0.2s, border-color 0.2s;
+    /* 限制最大宽度以避免名称过长占用太多空间 */
+    max-width: 450px; 
+    /* 允许 section-title-text 溢出和截断 */
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    flex-shrink: 0; 
+}
+
+.section-link:hover {
+    background-color: #3b3b3b;
+    border-color: #86e7ff; /* 悬停时边框高亮 */
+}
+
+/* 小节名称文本 (确保它占据剩余空间) */
+.section-title-text {
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    /* 确保名称部分能伸展，并推开duration-display */
+    flex-grow: 1; 
+    margin-right: 12px; /* 名称与时长之间的间隔 */
+}
+
+/* 5. 时长显示样式 (反色醒目设计) */
+/* ---------------------------------------------------- */
+.section-link .duration-display {
+    /* 清除 sidebar 样式的影响 (如果有的话) */
+    position: static; 
+    transform: none; 
+    
+    background-color: #66af4c; /* 突出绿色背景 (反色) */
+    color: #ffffff; /* 白色文本 */
+    padding: 4px 8px;
+    /* margin-left: 10px; 由 section-title-text 的 margin-right 保证 */
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    flex-shrink: 0; /* 确保时长区块不会被压缩 */
+}
+
+/* 6. 正在播放 (Active) 的小节区块 */
+/* ---------------------------------------------------- */
+.section-link.active {
+    background-color: #557e48; /* 较暗的激活背景色 */
+    border-color: #66af4c; 
+    font-weight: bold;
+}
+.section-link.active .duration-display {
+    background-color: #ffffff; /* 激活时时长背景反转为白色 */
+    color: #121212; /* 文本反转为黑色 */
+}
+
+
+/* ---------------------------------------------------- */
+/* 右侧播放器区域 (保持不变) */
+/* ---------------------------------------------------- */
+#player-view {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
-  }
-  
-  .video-player-container {
-    background: var(--bg-secondary);
-    border-radius: var(--card-radius);
-    padding: var(--spacing-md);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  }
-  
-  .video-player-container video {
-    width: 100%;
-    border-radius: 8px;
-    background: #000;
-  }
-  
-  .video-info {
-    margin-top: var(--spacing-md);
-  }
-  
-  .video-info h3 {
-    font-size: 1.2rem;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .video-info p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-  }
-  
-  /* ===== 完整列表区 ===== */
-  .full-list {
-    background: var(--bg-secondary);
-    border-radius: var(--card-radius);
-    padding: var(--spacing-md);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  }
-  
-  .full-list h2 {
-    margin-bottom: var(--spacing-md);
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
-  
-  .course-group {
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .course-group h3 {
-    color: var(--accent);
-    margin: var(--spacing-md) 0 var(--spacing-sm);
-    font-size: 1.1rem;
-  }
-  
-  .week-section {
-    margin-left: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-  }
-  
-  .week-section h4 {
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-sm);
-    font-size: 1rem;
-  }
-  
-  .video-item {
-    padding: 8px 12px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background 0.2s;
-  }
-  
-  .video-item:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-  }
-  
-  .video-item.active {
-    background: var(--bg-tertiary);
-    color: var(--accent);
-    font-weight: 500;
-  }
-  
-  /* ===== 滚动条美化（仅 WebKit） ===== */
-  .sidebar::-webkit-scrollbar,
-  .full-list::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .sidebar::-webkit-scrollbar-track,
-  .full-list::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .sidebar::-webkit-scrollbar-thumb,
-  .full-list::-webkit-scrollbar-thumb {
-    background: #444;
-    border-radius: 4px;
-  }
-  
-  .sidebar::-webkit-scrollbar-thumb:hover {
-    background: #666;
-  }
-  
-  /* ===== 响应式调整 ===== */
-  @media (max-width: 900px) {
-    .container {
-      flex-direction: column;
-      padding: var(--spacing-sm);
+    height: 100%; 
+}
+
+.video-wrapper-container {
+    flex-grow: 1; 
+    min-height: 0; 
+    max-height: calc(100% - 30px); 
+    padding: 0 5%; 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    position: relative; 
+}
+
+#video-player {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto; 
+    height: auto;
+    object-fit: contain; 
+}
+
+/* ---------------------------------------------------- */
+/* L5: WebVTT 字幕基础样式 (静态部分) */
+/* ---------------------------------------------------- */
+
+video::cue {
+    /* 移除默认背景，并设置颜色和阴影 (保留之前的优化) */
+    background-color: transparent !important;
+    color: white !important;
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.9), 
+        -1px -1px 0 #000,             
+        1px -1px 0 #000,              
+        -1px 1px 0 #000;
+}
+
+
+/* ---------------------------------------------------- */
+/* L6: WebVTT 字幕响应式字体大小 */
+/* ---------------------------------------------------- */
+
+/* 1. 视口高度 小于 900px 时: 24px (手机或小窗口) */
+@media (max-height: 899px) {
+    video::cue {
+        font-size: 24px !important; 
     }
-  
-    .sidebar {
-      width: 100%;
-      position: static;
-      max-height: 300px;
+}
+
+/* 2. 视口高度 900px 到 1199px 时: 28px (中等窗口) */
+@media (min-height: 900px) and (max-height: 1199px) {
+    video::cue {
+        font-size: 28px !important;
     }
-  }
+}
+
+/* 3. 视口高度 大于等于 1200px 时: 36px (大屏幕或全屏) */
+@media (min-height: 1200px) {
+    video::cue {
+        font-size: 36px !important;
+    }
+}
