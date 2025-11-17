@@ -307,7 +307,7 @@ html, body {
 
 /* 激活状态的悬停效果 (保持稳定) */
 .nav-tabs .nav-link.active:hover {
-    background-color: #999999 !important;
+    background-color: #d6d6d6 !important;
     color: #313131 !important;
 }
 

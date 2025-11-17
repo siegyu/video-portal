@@ -331,7 +331,7 @@ function buildListView(data) {
         
         const tabListId = `tab-list-${index1}`;
         const tabList = document.createElement('ul');
-        tabList.className = 'nav nav-tabs border-secondary mt-3 mb-3';
+        tabList.className = 'nav nav-tabs border-secondary mt-3 mb-5';
         tabList.id = tabListId;
 
         const tabContent = document.createElement('div');
