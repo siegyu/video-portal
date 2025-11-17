@@ -6,7 +6,7 @@
                 "title": "课程：final",
                 "weeks": [
                     {
-                        "title": "第7周",
+                        "title": "第7周 Film Environment",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -36,7 +36,7 @@
                         ]
                     },
                     {
-                        "title": "第12周",
+                        "title": "第12周 Environment Modeling",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -71,7 +71,7 @@
                         ]
                     },
                     {
-                        "title": "第13周",
+                        "title": "第13周 Dressing and LookDev",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -111,7 +111,7 @@
                         ]
                     },
                     {
-                        "title": "第14周",
+                        "title": "第14周 FX and Lighting",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -146,7 +146,7 @@
                         ]
                     },
                     {
-                        "title": "第15周",
+                        "title": "第15周 Render and Compose",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -1256,7 +1256,7 @@
                 "title": "课程：mod-env",
                 "weeks": [
                     {
-                        "title": "第4周",
+                        "title": "第4周 Environment Creation",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -1301,7 +1301,7 @@
                         ]
                     },
                     {
-                        "title": "第5周",
+                        "title": "第5周 From Gaea to Maya",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -1346,7 +1346,7 @@
                         ]
                     },
                     {
-                        "title": "第6周",
+                        "title": "第6周 Building Prop Modeling",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -1386,7 +1386,7 @@
                         ]
                     },
                     {
-                        "title": "第7周",
+                        "title": "第7周 Rocks Modeling",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -1426,7 +1426,7 @@
                         ]
                     },
                     {
-                        "title": "第9周",
+                        "title": "第9周 Set Dressing & Scattering Rocks",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -1466,7 +1466,7 @@
                         ]
                     },
                     {
-                        "title": "第10周",
+                        "title": "第10周 Procedural Grass & Trees",
                         "sections": [
                             {
                                 "title": "第0小节",
@@ -1516,7 +1516,7 @@
                         ]
                     },
                     {
-                        "title": "第11周",
+                        "title": "第11周 Fogs and Water",
                         "sections": [
                             {
                                 "title": "第0小节",
