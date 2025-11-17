@@ -182,9 +182,9 @@ html, body {
     /* 保持纵向排列，使用 h6 默认的 block 行为 */
     color: #86e7ff; /* 突出周标题 */
     font-weight: bold;
-    margin-bottom: 8px; /* 标题与小节区块的间距 */
-    padding-bottom: 4px; 
-    border-bottom: 1px solid #333333; /* 增加分隔线 */
+    margin-bottom: 10px; /* 标题与小节区块的间距 */
+    padding-bottom: 8px; 
+    border-bottom: 4px solid #333333; /* 增加分隔线 */
 }
 
 /* 3. 小节列表容器 (L4 - 紧凑尾随式排列) */
@@ -196,9 +196,9 @@ html, body {
     /* 核心: 使用 Flexbox 实现紧凑的尾随式排列和自然换行 */
     display: flex;
     flex-wrap: wrap; /* 允许换行 */
-    gap: 10px; /* 小节区块之间的间距 */
+    gap: 12px; /* 小节区块之间的间距 */
     /* 确保 section-list 本身有底部边距 */
-    margin-bottom: 20px; 
+    margin-bottom: 24px; 
 }
 
 /* 4. 小节区块 (L4 - 区块化、带框线、固定结构) */
@@ -210,14 +210,14 @@ html, body {
     background-color: #282828; 
     color: #E0E0E0;
     text-decoration: none;
-    padding: 8px 10px; /* 增加左右内边距 */
+    padding: 10px 12px; /* 增加左右内边距 */
     border: 1px solid #444444; /* 边框线 */
     border-radius: 4px; /* 轻微圆角 */
     font-size: 0.9rem;
     line-height: 1.2; /* 调整行高 */
     transition: background-color 0.2s, border-color 0.2s;
     /* 限制最大宽度以避免名称过长占用太多空间 */
-    max-width: 350px; 
+    max-width: 450px; 
     /* 允许 section-title-text 溢出和截断 */
     overflow: hidden; 
     text-overflow: ellipsis; 
@@ -236,7 +236,7 @@ html, body {
     text-overflow: ellipsis; 
     /* 确保名称部分能伸展，并推开duration-display */
     flex-grow: 1; 
-    margin-right: 10px; /* 名称与时长之间的间隔 */
+    margin-right: 12px; /* 名称与时长之间的间隔 */
 }
 
 /* 5. 时长显示样式 (反色醒目设计) */
@@ -248,7 +248,7 @@ html, body {
     
     background-color: #66af4c; /* 突出绿色背景 (反色) */
     color: #ffffff; /* 白色文本 */
-    padding: 2px 6px;
+    padding: 4px 8px;
     /* margin-left: 10px; 由 section-title-text 的 margin-right 保证 */
     border-radius: 3px;
     font-weight: bold;
