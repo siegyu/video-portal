@@ -290,10 +290,9 @@ html, body {
 
 /* Tab 悬停状态 (柔和高亮) */
 .nav-tabs .nav-link:hover {
-    background-color: #2f2f2f !important; /* 略微提亮背景 */
+    background-color: #3b3b3b !important; /* 略微提亮背景 */
     color: #d0d0d0 !important; /* 提亮文字 */
     border-color: #555555 !important; /* 柔和的灰色边框 */
-    transform: translateY(-2px); /* 轻微上浮效果 */
 }
 
 /* Tab 激活状态 (柔和激活设计) */
