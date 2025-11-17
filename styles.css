@@ -28,7 +28,7 @@ html, body {
     background-color: #1E1E1E !important; 
     font-size: 0.85rem; 
     flex-shrink: 0; /* 确保侧边栏不收缩 */
-    border-right: 1px solid #2c2c2c !important;
+    border-right: 1px solid #333333 !important;
 }
 
 /* ---------------------------------------------------- */
@@ -269,6 +269,54 @@ html, body {
     color: #121212; /* 文本反转为黑色 */
 }
 
+/* ---------------------------------------------------- */
+/* L8: 课程 Tab 样式优化 (柔和过渡设计) */
+/* ---------------------------------------------------- */
+
+/* Tab 容器样式 */
+.nav-tabs {
+    border-bottom: 1px solid #3a3a3a !important; /* 更柔和的底部边框 */
+}
+
+/* Tab 按钮基础样式 (非激活状态) */
+.nav-tabs .nav-link {
+    background-color: #252525 !important; /* 深色背景 */
+    color: #b0b0b0 !important; /* 中等灰色文字 */
+    border: 1px solid #3a3a3a !important; /* 柔和边框 */
+    border-bottom: none !important; /* 移除底部边框以与容器融合 */
+    transition: all 0.25s ease; /* 平滑过渡动画 */
+    margin-right: 4px; /* Tab 之间的间距 */
+}
+
+/* Tab 悬停状态 (柔和高亮) */
+.nav-tabs .nav-link:hover {
+    background-color: #2f2f2f !important; /* 略微提亮背景 */
+    color: #d0d0d0 !important; /* 提亮文字 */
+    border-color: #555555 !important; /* 柔和的灰色边框 */
+    transform: translateY(-1px); /* 轻微上浮效果 */
+}
+
+/* Tab 激活状态 (柔和激活设计) */
+.nav-tabs .nav-link.active {
+    background-color: #1E1E1E !important; /* 与内容区背景一致 */
+    color: #86e7ff !important; /* 主题蓝色 (与侧边栏 L1 一致) */
+    border-color: #555555 !important; /* 柔和边框 */
+    border-bottom-color: #1E1E1E !important; /* 底部边框与背景融合 */
+    font-weight: 600; /* 略微加粗以突出 */
+}
+
+/* 激活状态的悬停效果 (保持稳定) */
+.nav-tabs .nav-link.active:hover {
+    background-color: #1E1E1E !important;
+    color: #86e7ff !important;
+    transform: none; /* 激活状态不移动 */
+}
+
+/* 焦点状态 (去除默认的蓝色轮廓) */
+.nav-tabs .nav-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(134, 231, 255, 0.3); /* 柔和的焦点指示 */
+}
 
 /* ---------------------------------------------------- */
 /* 右侧播放器区域 (保持不变) */
