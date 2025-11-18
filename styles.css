@@ -8,14 +8,24 @@ html, body {
     background-color: #121212; 
     color: #E0E0E0; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden; /* 防止整体页面滚动 */
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+#top-header {
+    flex-shrink: 0; /* 确保顶部不会被内容挤压 */
+}
 /* ---------------------------------------------------- */
 /* 整体布局容器 (Sidebar + Main Content) */
 /* ---------------------------------------------------- */
 .h-remaining-viewport {
-    height: calc(100vh - 48px); 
-    /* NEW: 启用 Flexbox 布局以容纳侧边栏和主内容 */
+    flex: 1;
+    min-height: 0; /* 允许子元素滚动 */
+    /* 启用 Flexbox 布局以容纳侧边栏和主内容 */
     display: flex; 
     /* 移除顶层容器的隐藏，让内部的 #main-content 滚动 */
     overflow: hidden; 
@@ -36,7 +46,6 @@ html, body {
 /* ---------------------------------------------------- */
 #main-content {
     flex-grow: 1; 
-    /* !!! 核心修复 !!! */
     /* 允许主内容区域在内容溢出时垂直滚动 */
     overflow-y: auto;
     /* 统一内边距，对应 index.html 中的 p-4 */
