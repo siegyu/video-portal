@@ -200,11 +200,17 @@ function buildSidebarNavigation(data) {
     uniqueIdCounter = 0; 
     
     function registerCollapseEvents(header, collapseElement) {
-        collapseElement.addEventListener('show.bs.collapse', () => {
-            toggleIcon(header, true);
+        collapseElement.addEventListener('show.bs.collapse', (e) => {
+            // 只处理当前元素的折叠事件，忽略子元素冒泡的事件
+            if (e.target === collapseElement) {
+                toggleIcon(header, true);
+            }
         });
-        collapseElement.addEventListener('hide.bs.collapse', () => {
-            toggleIcon(header, false);
+        collapseElement.addEventListener('hide.bs.collapse', (e) => {
+            // 只处理当前元素的折叠事件，忽略子元素冒泡的事件
+            if (e.target === collapseElement) {
+                toggleIcon(header, false);
+            }
         });
     }
 
